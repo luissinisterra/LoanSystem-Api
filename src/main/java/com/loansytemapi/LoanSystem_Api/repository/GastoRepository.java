@@ -1,7 +1,6 @@
-package com.loansytemapi.LoanSystem_Api.Repository;
+package com.loansytemapi.LoanSystem_Api.repository;
 
-import com.loansytemapi.LoanSystem_Api.Model.Gasto;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.loansytemapi.LoanSystem_Api.model.Gasto;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;

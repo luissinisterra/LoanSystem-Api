@@ -1,7 +1,7 @@
-package com.loansytemapi.LoanSystem_Api.Controller;
+package com.loansytemapi.LoanSystem_Api.controller;
 
-import com.loansytemapi.LoanSystem_Api.Model.Gasto;
-import com.loansytemapi.LoanSystem_Api.Service.GastoService;
+import com.loansytemapi.LoanSystem_Api.model.Gasto;
+import com.loansytemapi.LoanSystem_Api.service.GastoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

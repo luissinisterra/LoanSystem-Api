@@ -1,4 +1,4 @@
-package com.loansytemapi.LoanSystem_Api.Model;
+package com.loansytemapi.LoanSystem_Api.model;
 
 import lombok.*;
 

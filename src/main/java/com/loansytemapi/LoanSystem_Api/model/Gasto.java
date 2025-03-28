@@ -1,6 +1,5 @@
-package com.loansytemapi.LoanSystem_Api.Model;
+package com.loansytemapi.LoanSystem_Api.model;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 public class Gasto {

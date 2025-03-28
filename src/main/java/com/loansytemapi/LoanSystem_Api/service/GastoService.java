@@ -1,7 +1,7 @@
-package com.loansytemapi.LoanSystem_Api.Service;
+package com.loansytemapi.LoanSystem_Api.service;
 
-import com.loansytemapi.LoanSystem_Api.Model.Gasto;
-import com.loansytemapi.LoanSystem_Api.Repository.GastoRepository;
+import com.loansytemapi.LoanSystem_Api.model.Gasto;
+import com.loansytemapi.LoanSystem_Api.repository.GastoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

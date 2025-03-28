@@ -1,7 +1,7 @@
-package com.loansytemapi.LoanSystem_Api.Controller;
+package com.loansytemapi.LoanSystem_Api.controller;
 
-import com.loansytemapi.LoanSystem_Api.Model.Client;
-import com.loansytemapi.LoanSystem_Api.Service.ClientService;
+import com.loansytemapi.LoanSystem_Api.model.Client;
+import com.loansytemapi.LoanSystem_Api.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

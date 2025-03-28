@@ -1,9 +1,9 @@
-package com.loansytemapi.LoanSystem_Api.Service;
+package com.loansytemapi.LoanSystem_Api.service;
 
-import com.loansytemapi.LoanSystem_Api.Model.Address;
-import com.loansytemapi.LoanSystem_Api.Model.Client;
-import com.loansytemapi.LoanSystem_Api.Model.Loan;
-import com.loansytemapi.LoanSystem_Api.Repository.ClientRepository;
+import com.loansytemapi.LoanSystem_Api.model.Address;
+import com.loansytemapi.LoanSystem_Api.model.Client;
+import com.loansytemapi.LoanSystem_Api.model.Loan;
+import com.loansytemapi.LoanSystem_Api.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

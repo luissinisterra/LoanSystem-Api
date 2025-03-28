@@ -1,6 +1,6 @@
-package com.loansytemapi.LoanSystem_Api.Repository;
+package com.loansytemapi.LoanSystem_Api.repository;
 
-import com.loansytemapi.LoanSystem_Api.Model.Client;
+import com.loansytemapi.LoanSystem_Api.model.Client;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
