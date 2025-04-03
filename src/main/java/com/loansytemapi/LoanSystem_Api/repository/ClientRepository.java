@@ -41,10 +41,20 @@ public class ClientRepository {
     }
 
     public List<Client> filterByQuery(String query) {
-        List<Client> clients = new ArrayList<>();
-        return this.clients.values().stream().
-                filter(client -> query == null || client.getId().contains(query))
-                .collect(Collectors.toUnmodifiableList());
-    }
+        if (query == null || query.isEmpty()) {
+            return new ArrayList<>(this.clients.values());
+        }
 
+        String lowerCaseQuery = query.toLowerCase();
+
+        return this.clients.values().stream()
+                .filter(client -> {
+                    return (client.getId() != null && client.getId().toLowerCase().contains(lowerCaseQuery)) ||
+                            (client.getFirstName() != null && client.getFirstName().toLowerCase().contains(lowerCaseQuery)) ||
+                            (client.getSecondName() != null && client.getSecondName().toLowerCase().contains(lowerCaseQuery)) ||
+                            (client.getEmail() != null && client.getEmail().toLowerCase().contains(lowerCaseQuery)) ||
+                            (client.getPhone() != null && client.getPhone().toLowerCase().contains(lowerCaseQuery));
+                })
+                .collect(Collectors.toList());
+    }
 }

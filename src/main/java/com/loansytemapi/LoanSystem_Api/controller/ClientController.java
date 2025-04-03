@@ -57,10 +57,12 @@ public class ClientController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Client>> searchClient(@RequestParam String query) {
-        List<Client> clients = this.clientService.
+    public ResponseEntity<List<Client>> searchClient(@RequestParam(required = false) String query) {
+        try {
+            List<Client> clients = this.clientService.filterByQuery(query);
+            return new ResponseEntity<>(clients, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-
-
-
 }
