@@ -25,10 +25,20 @@ public class GastoService implements IGastoService {
         gastoRepository.save(new Gasto("Salida", "Almuerzo", 20.000));
     }
     @Override
-    //Save
-    public Gasto save(Gasto gasto) {
+    public Gasto save(Gasto gasto) throws InvalidTextLengthException, InvalidAmmountException, IncompleteDataException {
+        if (gasto.getDescripcionGasto() == null || gasto.getDescripcionGasto().isEmpty() || gasto.getTipoDeGasto() == null || gasto.getTipoDeGasto().isEmpty()
+            || gasto.getValorGasto() == 0) {
+            throw new IncompleteDataException("ERROR: Falta información para crear el gasto correctamente");
+        }
+        if (gasto.getDescripcionGasto().length() > 50) {
+            throw new InvalidTextLengthException("ERROR: La descripción del gasto no debe superar los 50 caracteres");
+        }
+        if (gasto.getValorGasto() < 0) {
+            throw new InvalidAmmountException("ERROR: El valor del gasto no puede ser negativo o igual");
+        }
         return gastoRepository.save(gasto);
     }
+
 
     @Override
     //Remove
