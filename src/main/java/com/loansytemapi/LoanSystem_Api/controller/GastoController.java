@@ -23,7 +23,7 @@ public class GastoController {
     private final IGastoService gastoService;
 
     @Autowired
-    public GastoController(GastoService gastoService) {
+    public GastoController(IGastoService gastoService) {
         this.gastoService = gastoService;
     }
 
