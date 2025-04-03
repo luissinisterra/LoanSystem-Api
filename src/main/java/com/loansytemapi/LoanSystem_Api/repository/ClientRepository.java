@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Repository
@@ -38,4 +40,21 @@ public class ClientRepository {
         return client;
     }
 
+    public List<Client> filterByQuery(String query) {
+        if (query == null || query.isEmpty()) {
+            return new ArrayList<>(this.clients.values());
+        }
+
+        String lowerCaseQuery = query.toLowerCase();
+
+        return this.clients.values().stream()
+                .filter(client -> {
+                    return (client.getId() != null && client.getId().toLowerCase().contains(lowerCaseQuery)) ||
+                            (client.getFirstName() != null && client.getFirstName().toLowerCase().contains(lowerCaseQuery)) ||
+                            (client.getSecondName() != null && client.getSecondName().toLowerCase().contains(lowerCaseQuery)) ||
+                            (client.getEmail() != null && client.getEmail().toLowerCase().contains(lowerCaseQuery)) ||
+                            (client.getPhone() != null && client.getPhone().toLowerCase().contains(lowerCaseQuery));
+                })
+                .collect(Collectors.toList());
+    }
 }

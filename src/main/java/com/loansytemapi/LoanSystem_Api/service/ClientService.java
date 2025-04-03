@@ -68,4 +68,8 @@ public class ClientService {
     public Client update(String id, Client client) {
         return this.clientRepository.update(id, client);
     }
+
+    public List<Client> filterByQuery(String query) {
+        return this.clientRepository.filterByQuery(query);
+    }
 }
