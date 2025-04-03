@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Repository
@@ -36,6 +38,13 @@ public class ClientRepository {
     public Client update(String id, Client client) {
         this.clients.put(id, client);
         return client;
+    }
+
+    public List<Client> filterByQuery(String query) {
+        List<Client> clients = new ArrayList<>();
+        return this.clients.values().stream().
+                filter(client -> query == null || client.getId().contains(query))
+                .collect(Collectors.toUnmodifiableList());
     }
 
 }
