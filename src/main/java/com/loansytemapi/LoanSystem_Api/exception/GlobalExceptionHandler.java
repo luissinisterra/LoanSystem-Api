@@ -1,7 +1,6 @@
-package com.loansytemapi.LoanSystem_Api.controller;
+package com.loansytemapi.LoanSystem_Api.exception;
 
 import com.loansytemapi.LoanSystem_Api.dto.ErrorResponseDTO;
-import com.loansytemapi.LoanSystem_Api.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
