@@ -23,7 +23,7 @@ public class GastoRepository {
     }
 
     //Eliminar gasto
-    public void delete(String idGasto) {
+    public void remove(String idGasto) {
         baseDeDatos.remove(idGasto);
     }
 
