@@ -67,7 +67,7 @@ public class GastoService implements IGastoService {
     }
 
     @Override
-    public Gasto getByid(String idGasto) {
+    public Gasto getByid(String idGasto) throws NotFoundException {
         Gasto gasto = gastoRepository.getById(idGasto);
         if  (gasto == null) {
             throw new NotFoundException("ERROR: No se ha encontrado el gasto");

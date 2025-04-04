@@ -1,6 +1,6 @@
 package com.loansytemapi.LoanSystem_Api.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.UUID;
 public class Gasto {
 
@@ -8,15 +8,15 @@ public class Gasto {
     private String tipoDeGasto;
     private String descripcionGasto;
     private double valorGasto;
-    private LocalDateTime fechaGasto;
+    private LocalDate fechaGasto;
 
     public Gasto() {
         idGasto = UUID.randomUUID().toString();
-        fechaGasto = LocalDateTime.now();
+        fechaGasto = LocalDate.now();
     }
     public Gasto (String tipoDeGasto, String descripcionGasto,  double valorGasto) {
         idGasto = UUID.randomUUID().toString();
-        fechaGasto = LocalDateTime.now();
+        fechaGasto = LocalDate.now();
         this.tipoDeGasto = tipoDeGasto;
         this.descripcionGasto = descripcionGasto;
         this.valorGasto = valorGasto;
@@ -53,10 +53,10 @@ public class Gasto {
     public void setIdGasto(String idGasto) {
         this.idGasto = idGasto;
     }
-    public LocalDateTime getFechaGasto() {
+    public LocalDate getFechaGasto() {
         return fechaGasto;
     }
-    public void setFechaGasto(LocalDateTime fechaGasto) {
+    public void setFechaGasto(LocalDate fechaGasto) {
         this.fechaGasto = fechaGasto;
     }
 }

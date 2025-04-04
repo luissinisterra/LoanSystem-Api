@@ -1,5 +1,9 @@
 package com.loansytemapi.LoanSystem_Api.controller;
 
+import com.loansytemapi.LoanSystem_Api.exception.IncompleteDataException;
+import com.loansytemapi.LoanSystem_Api.exception.InvalidAmmountException;
+import com.loansytemapi.LoanSystem_Api.exception.InvalidTextLengthException;
+import com.loansytemapi.LoanSystem_Api.exception.NotFoundException;
 import com.loansytemapi.LoanSystem_Api.model.Gasto;
 import com.loansytemapi.LoanSystem_Api.service.GastoService;
 import com.loansytemapi.LoanSystem_Api.service.imp.IGastoService;
@@ -34,7 +38,7 @@ public class GastoController {
             @ApiResponse(responseCode = "201", description = "Gasto creado"),
             @ApiResponse(responseCode = "400", description = "Error en el gasto")
     })
-    public ResponseEntity<Gasto> saveGasto(@RequestBody @Parameter(description = "Body con el gasto para agregarlo") Gasto gasto){
+    public ResponseEntity<Gasto> saveGasto(@RequestBody @Parameter(description = "Body con el gasto para agregarlo") Gasto gasto) throws IncompleteDataException, InvalidTextLengthException, InvalidAmmountException {
         Gasto g = gastoService.save(gasto);
         return new  ResponseEntity<>(g, HttpStatus.CREATED);
     }
@@ -46,7 +50,7 @@ public class GastoController {
             @ApiResponse(responseCode = "204", description = "Eliminado"),
             @ApiResponse(responseCode = "404", description = "Error encontrando el gasto")
     })
-    public ResponseEntity<Void> deleteGasto(@PathVariable @Parameter (description = "ID del gasto que se eliminara") String id) {
+    public ResponseEntity<Void> deleteGasto(@PathVariable @Parameter (description = "ID del gasto que se eliminara") String id) throws NotFoundException {
         gastoService.remove(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -59,7 +63,7 @@ public class GastoController {
             @ApiResponse(responseCode = "404", description = "Error encontrando el gasto")
     })
     public ResponseEntity<Gasto> updateGasto(@PathVariable @Parameter (description = "ID del gasto que se actualizara") String id ,
-                                             @RequestBody @Parameter (description = "Body con la nueva información del gasto") Gasto gasto){
+                                             @RequestBody @Parameter (description = "Body con la nueva información del gasto") Gasto gasto) throws NotFoundException {
         gasto.setIdGasto(id);
         Gasto g = gastoService.update(gasto);
         return new ResponseEntity<>(g, HttpStatus.OK);
@@ -83,7 +87,7 @@ public class GastoController {
             @ApiResponse(responseCode = "200", description = "Gasto encontrado"),
             @ApiResponse(responseCode = "404", description = "Error en al encontrar el gasto")
     })
-    public ResponseEntity<Gasto> getGastoById(@PathVariable @Parameter (description = "ID del gasto que se encontrara") String id){
+    public ResponseEntity<Gasto> getGastoById(@PathVariable @Parameter (description = "ID del gasto que se encontrara") String id) throws NotFoundException {
         Gasto g = gastoService.getByid(id);
         return new ResponseEntity<>(g, HttpStatus.OK);
     }

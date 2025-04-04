@@ -1,5 +1,8 @@
 package com.loansytemapi.LoanSystem_Api.controller;
 
+import com.loansytemapi.LoanSystem_Api.exception.IncompleteDataException;
+import com.loansytemapi.LoanSystem_Api.exception.InvalidAmmountException;
+import com.loansytemapi.LoanSystem_Api.exception.InvalidTextLengthException;
 import com.loansytemapi.LoanSystem_Api.exception.NotFoundException;
 import com.loansytemapi.LoanSystem_Api.model.Income;
 import com.loansytemapi.LoanSystem_Api.service.imp.IIncomeService;
@@ -41,7 +44,7 @@ public class IncomeController {
             @ApiResponse(responseCode = "404", description = "Ingreso no encontrado")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Income> getById(@PathVariable @Parameter(description = "ID del ingreso que queremos encontrar") String id) {
+    public ResponseEntity<Income> getById(@PathVariable @Parameter(description = "ID del ingreso que queremos encontrar") String id) throws NotFoundException {
         return ResponseEntity.ok(incomeService.getByid(id));
     }
 
@@ -51,7 +54,7 @@ public class IncomeController {
             @ApiResponse(responseCode = "400", description = "Datos inválidos para la creación")
     })
     @PostMapping
-    public ResponseEntity<Income> save(@RequestBody Income income) {
+    public ResponseEntity<Income> save(@RequestBody Income income) throws IncompleteDataException, InvalidTextLengthException, InvalidAmmountException {
         return ResponseEntity.status(201).body(incomeService.save(income));
     }
 
@@ -61,7 +64,7 @@ public class IncomeController {
             @ApiResponse(responseCode = "404", description = "Ingreso no encontrado")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Income> update(@PathVariable @Parameter(description = "ID del ingreso que queremos editar") String id, @RequestBody Income income) {
+    public ResponseEntity<Income> update(@PathVariable @Parameter(description = "ID del ingreso que queremos editar") String id, @RequestBody Income income) throws NotFoundException {
         income.setIncomeID(id);
         Income i = incomeService.update(income);
         return ResponseEntity.ok(i);
@@ -73,7 +76,7 @@ public class IncomeController {
             @ApiResponse(responseCode = "404", description = "Ingreso no encontrado")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> remove(@PathVariable @Parameter(description = "ID del ingreso que queremos eliminar") String id) {
+    public ResponseEntity<Void> remove(@PathVariable @Parameter(description = "ID del ingreso que queremos eliminar") String id) throws NotFoundException {
         incomeService.remove(id);
         return ResponseEntity.noContent().build();
     }

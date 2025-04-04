@@ -17,17 +17,15 @@ import java.util.List;
 public class IncomeService implements IIncomeService {
 
     private final IncomeRepository incomeRepository;
-    private final GastoRepository gastoRepository;
 
     @Autowired
-    public IncomeService(IncomeRepository incomeRepository, GastoRepository gastoRepository) {
+    public IncomeService(IncomeRepository incomeRepository) throws IncompleteDataException, InvalidTextLengthException, InvalidAmmountException {
         this.incomeRepository = incomeRepository;
         initSampleData();
-        this.gastoRepository = gastoRepository;
     }
 
 
-    private void initSampleData() {
+    private void initSampleData() throws IncompleteDataException, InvalidTextLengthException, InvalidAmmountException {
         save (new Income("Pago de deuda luz mary", "Mary pago la cuota semanal", 500));
         save (new Income("Pago de deuda Juan", "Juan pago la cuota mensual", 50000));
         save (new Income("Ganancia de inversion", "Inversion en restaurante", 80000));
@@ -72,7 +70,7 @@ public class IncomeService implements IIncomeService {
     }
 
     @Override
-    public Income getByid(String id)throws NotFoundException {
+    public Income getByid(String id) throws NotFoundException {
         Income i = incomeRepository.findById(id);
         if (i == null) {
             throw new NotFoundException("ERROR: No se ha encontrado el gasto");
@@ -81,7 +79,7 @@ public class IncomeService implements IIncomeService {
     }
 
     @Override
-    public List<Income> getByFilters(String incomeType, Double minimumIncome, Double maximumIncome, Double incomeAmmount, String dateFilter) {
+    public List<Income> getByFilters(String incomeType, Double minimumIncome, Double maximumIncome, Double incomeAmmount, String dateFilter) throws NotFoundException {
         List<Income> result = incomeRepository.getByFilter(incomeType, minimumIncome, maximumIncome, incomeAmmount, dateFilter);
         if (result.isEmpty()) {
             throw new NotFoundException("ERROR: No se han encontrado gastos por los datos que suministro");

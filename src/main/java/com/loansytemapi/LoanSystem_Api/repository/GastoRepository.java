@@ -3,6 +3,7 @@ package com.loansytemapi.LoanSystem_Api.repository;
 import com.loansytemapi.LoanSystem_Api.model.Gasto;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,9 +55,9 @@ public class GastoRepository {
                 .filter(record -> filtroFecha == null || cumpleFiltroFecha(record.getFechaGasto(), filtroFecha)) // <- Filtra por últimos registros
                 .collect(Collectors.toList());
     }
-    private boolean cumpleFiltroFecha(LocalDateTime fecha, String filtroFecha) {
-        LocalDateTime ahora = LocalDateTime.now();
-        LocalDateTime fechaLimite = switch (filtroFecha.toLowerCase()) {
+    private boolean cumpleFiltroFecha(LocalDate fecha, String filtroFecha) {
+        LocalDate ahora = LocalDate.now();
+        LocalDate fechaLimite = switch (filtroFecha.toLowerCase()) {
             case "1 semana" ->
                     ahora.minusWeeks(1);
             case "1 mes" ->

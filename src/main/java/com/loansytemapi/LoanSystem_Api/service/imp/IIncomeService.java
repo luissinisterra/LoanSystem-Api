@@ -13,6 +13,6 @@ public interface IIncomeService {
     void remove(String id) throws NotFoundException;
     Income update(Income income) throws NotFoundException;
     List<Income> getAll();
-    Income getByid(String id);
-    public List<Income> getByFilters(String incomeType, Double minimumIncome, Double maximumIncome, Double incomeAmmount, String dateFilter);
+    Income getByid(String id) throws NotFoundException;
+    public List<Income> getByFilters(String incomeType, Double minimumIncome, Double maximumIncome, Double incomeAmmount, String dateFilter) throws NotFoundException;
 }

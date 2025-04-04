@@ -13,6 +13,6 @@ public interface IGastoService {
     void remove(String idGasto) throws NotFoundException;
     Gasto update(Gasto gasto) throws NotFoundException;
     List<Gasto> getAll();
-    Gasto getByid(String idGasto);
+    Gasto getByid(String idGasto) throws NotFoundException;
     public List<Gasto> getByFilters(String tipoDeGasto, double gastoMinimo, double gastoMaximo, double montoGasto, String filtroFecha);
 }
