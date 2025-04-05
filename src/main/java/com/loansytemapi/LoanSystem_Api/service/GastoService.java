@@ -53,10 +53,12 @@ public class GastoService implements IGastoService {
     @Override
     //Update
     public Gasto update (Gasto gasto) throws NotFoundException {
-        Gasto g = gastoRepository.update(gasto);
+        Gasto g = gastoRepository.getById(gasto.getIdGasto());
         if (g == null) {
             throw new  NotFoundException("ERROR: No se ha encontrado el gasto");
         }
+        gasto.setFechaGasto(g.getFechaGasto());
+        gastoRepository.update(gasto);
         return g;
     }
 
