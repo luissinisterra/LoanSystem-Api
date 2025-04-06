@@ -26,9 +26,9 @@ public class IncomeService implements IIncomeService {
 
 
     private void initSampleData() throws IncompleteDataException, InvalidTextLengthException, InvalidAmmountException {
-        save (new Income("Pago de deuda luz mary", "Mary pago la cuota semanal", 500));
-        save (new Income("Pago de deuda Juan", "Juan pago la cuota mensual", 50000));
-        save (new Income("Ganancia de inversion", "Inversion en restaurante", 80000));
+        save (new Income("Pago", "Mary pago la cuota semanal", 500));
+        save (new Income("Pago", "Juan pago la cuota mensual", 50000));
+        save (new Income("Ingreso", "Ingreso del 20% del pago de Mary", 80000));
     }
 
     @Override
@@ -57,10 +57,12 @@ public class IncomeService implements IIncomeService {
 
     @Override
     public Income update(Income income) throws NotFoundException {
-        Income i = incomeRepository.update(income);
+        Income i = incomeRepository.findById(income.getIncomeID());
         if (i == null) {
             throw new NotFoundException("ERROR: No se ha encontrado el ingreso que desea actualizar");
         }
+        income.setIncomeDate(i.getIncomeDate());
+        incomeRepository.update(income);
         return income;
     }
 
