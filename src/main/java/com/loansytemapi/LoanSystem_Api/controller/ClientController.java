@@ -29,6 +29,15 @@ public class ClientController {
         return new ResponseEntity<>(clients, HttpStatus.OK);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Client> getClientById(@PathVariable String id) {
+        Client client = this.clientService.findById(id);
+        if(client == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(client, HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<Client> createClient(@RequestBody Client newClient) {
         if(newClient == null) {
@@ -57,7 +66,7 @@ public class ClientController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Client>> searchClient(@RequestParam(required = false) String query) {
+    public ResponseEntity<List<Client>> searchClients(@RequestParam(required = false) String query) {
         List<Client> clients = this.clientService.filterByQuery(query);
         if(clients.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
