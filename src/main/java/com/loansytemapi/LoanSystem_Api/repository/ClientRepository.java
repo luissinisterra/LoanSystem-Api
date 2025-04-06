@@ -1,6 +1,8 @@
 package com.loansytemapi.LoanSystem_Api.repository;
 
 import com.loansytemapi.LoanSystem_Api.model.Client;
+import com.loansytemapi.LoanSystem_Api.repository.imp.IClientRepository;
+import com.loansytemapi.LoanSystem_Api.repository.imp.ILoanRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -12,35 +14,41 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Repository
-public class ClientRepository {
+public class ClientRepository implements IClientRepository {
 
     private final Map<String, Client> clients = new HashMap<>();
 
-    public List<Client> findAll() {
+    @Override
+    public List<Client> getAllClients() {
         return new ArrayList<>(this.clients.values());
     }
 
-    public Client findById(String id) {
+    @Override
+    public Client getClientById(String id) {
         return this.clients.get(id);
     }
 
-    public Client save(Client client) {
+    @Override
+    public Client createClient(Client client) {
         this.clients.put(client.getId(), client);
         return client;
     }
 
-    public Client delete(String id) {
+    @Override
+    public Client deleteClient(String id) {
         Client client = this.clients.get(id);
         this.clients.remove(id);
         return client;
     }
 
-    public Client update(String id, Client client) {
+    @Override
+    public Client updateClient(String id, Client client) {
         this.clients.put(id, client);
         return client;
     }
 
-    public List<Client> filterByQuery(String query) {
+    @Override
+    public List<Client> searchClientsByQuery(String query) {
         if (query == null || query.isEmpty()) {
             return new ArrayList<>(this.clients.values());
         }

@@ -46,30 +46,30 @@ public class ClientService {
         Client client = new Client("P12345", "Juan", "Carlos", "García", "López", 30,
                 "juan.garcia@example.com", "600123456", address);
 
-        this.clientRepository.save(client);
+        this.clientRepository.createClient(client);
     }
 
     public List<Client> findAll() {
-        return this.clientRepository.findAll();
+        return this.clientRepository.getAllClients();
     }
 
     public Client findById(String id) {
-        return this.clientRepository.findById(id);
+        return this.clientRepository.getClientById(id);
     }
 
     public Client save(Client client) {
-        return this.clientRepository.save(client);
+        return this.clientRepository.createClient(client);
     }
 
     public Client delete(String id) {
-        return this.clientRepository.delete(id);
+        return this.clientRepository.deleteClient(id);
     }
 
     public Client update(String id, Client client) {
-        return this.clientRepository.update(id, client);
+        return this.clientRepository.updateClient(id, client);
     }
 
     public List<Client> filterByQuery(String query) {
-        return this.clientRepository.filterByQuery(query);
+        return this.clientRepository.searchClientsByQuery(query);
     }
 }
