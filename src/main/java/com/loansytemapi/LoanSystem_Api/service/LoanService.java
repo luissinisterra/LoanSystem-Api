@@ -12,11 +12,11 @@ import java.util.List;
 
 @Service
 public class LoanService implements ILoanService {
-    private final ILoanRepository loanRepository;
+    private final ILoanRepository iLoanRepository;
 
     @Autowired
-    public LoanService(LoanRepository loanRepository) {
-        this.loanRepository = loanRepository;
+    public LoanService(ILoanRepository iLoanRepository) {
+        this.iLoanRepository = iLoanRepository;
         this.initSampleData();
     }
 
@@ -36,37 +36,37 @@ public class LoanService implements ILoanService {
                 LocalDate.of(2024, 6, 1)
         );
 
-        this.loanRepository.createLoan(loan1);
-        this.loanRepository.createLoan(loan2);
+        this.iLoanRepository.createLoan(loan1);
+        this.iLoanRepository.createLoan(loan2);
     }
 
     @Override
     public List<Loan> getAllLoans() {
-        return this.loanRepository.getAllLoans();
+        return this.iLoanRepository.getAllLoans();
     }
 
     @Override
     public Loan getLoanById(String id) {
-        return this.loanRepository.getLoanById(id);
+        return this.iLoanRepository.getLoanById(id);
     }
 
     @Override
     public Loan createLoan(Loan loan) {
-        return this.loanRepository.createLoan(loan);
+        return this.iLoanRepository.createLoan(loan);
     }
 
     @Override
     public Loan deleteLoan(String id) {
-        return this.loanRepository.deleteLoan(id);
+        return this.iLoanRepository.deleteLoan(id);
     }
 
     @Override
     public Loan updateLoan(String id, Loan loan) {
-        return this.loanRepository.updateLoan(id, loan);
+        return this.iLoanRepository.updateLoan(id, loan);
     }
 
     @Override
     public List<Loan> searchLoansByQuery(String query) {
-        return this.loanRepository.searchLoansByQuery(query);
+        return this.iLoanRepository.searchLoansByQuery(query);
     }
 }

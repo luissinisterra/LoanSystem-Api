@@ -17,11 +17,11 @@ import java.util.Map;
 
 @Service
 public class ClientService implements IClientService {
-    private final IClientRepository clientRepository;
+    private final IClientRepository iClientRepository;
 
     @Autowired
-    public ClientService(IClientRepository clientRepository) {
-        this.clientRepository = clientRepository;
+    public ClientService(IClientRepository iClientRepository) {
+        this.iClientRepository = iClientRepository;
         this.initSampleData();
     }
 
@@ -48,36 +48,36 @@ public class ClientService implements IClientService {
         Client client = new Client("P12345", "Juan", "Carlos", "García", "López", 30,
                 "juan.garcia@example.com", "600123456", address);
 
-        this.clientRepository.createClient(client);
+        this.iClientRepository.createClient(client);
     }
 
     @Override
     public List<Client> getAllClients() {
-        return this.clientRepository.getAllClients();
+        return this.iClientRepository.getAllClients();
     }
 
     @Override
     public Client getClientById(String id) {
-        return this.clientRepository.getClientById(id);
+        return this.iClientRepository.getClientById(id);
     }
 
     @Override
     public Client createClient(Client client) {
-        return this.clientRepository.createClient(client);
+        return this.iClientRepository.createClient(client);
     }
 
     @Override
     public Client deleteClient(String id) {
-        return this.clientRepository.deleteClient(id);
+        return this.iClientRepository.deleteClient(id);
     }
 
     @Override
     public Client updateClient(String id, Client client) {
-        return this.clientRepository.updateClient(id, client);
+        return this.iClientRepository.updateClient(id, client);
     }
 
     @Override
     public List<Client> searchClientsByQuery(String query) {
-        return this.clientRepository.searchClientsByQuery(query);
+        return this.iClientRepository.searchClientsByQuery(query);
     }
 }

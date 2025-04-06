@@ -2,6 +2,7 @@ package com.loansytemapi.LoanSystem_Api.controller;
 
 import com.loansytemapi.LoanSystem_Api.model.Client;
 import com.loansytemapi.LoanSystem_Api.service.ClientService;
+import com.loansytemapi.LoanSystem_Api.service.imp.IClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,19 +11,19 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/clients")
+@RequestMapping("/api/clients")
 public class ClientController {
 
-    private final ClientService clientService;
+    private final IClientService iClientService;
 
     @Autowired
-    public ClientController(ClientService clientService) {
-        this.clientService = clientService;
+    public ClientController(IClientService iClientService) {
+        this.iClientService = iClientService;
     }
 
     @GetMapping
     public ResponseEntity<List<Client>> getAllClients() {
-        List<Client> clients = this.clientService.findAll();
+        List<Client> clients = this.iClientService.getAllClients();
         if(clients.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -31,7 +32,7 @@ public class ClientController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Client> getClientById(@PathVariable String id) {
-        Client client = this.clientService.findById(id);
+        Client client = this.iClientService.getClientById(id);
         if(client == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -43,7 +44,7 @@ public class ClientController {
         if(newClient == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        Client client = this.clientService.save(newClient);
+        Client client = this.iClientService.createClient(newClient);
         return new ResponseEntity<>(client, HttpStatus.CREATED);
     }
 
@@ -52,13 +53,13 @@ public class ClientController {
         if(newClient == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        Client client = this.clientService.update(id, newClient);
+        Client client = this.iClientService.updateClient(id, newClient);
         return new ResponseEntity<>(client, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Client> deleteClient(@PathVariable String id) {
-        Client client = this.clientService.delete(id);
+        Client client = this.iClientService.deleteClient(id);
         if(client == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -67,7 +68,7 @@ public class ClientController {
 
     @GetMapping("/search")
     public ResponseEntity<List<Client>> searchClients(@RequestParam(required = false) String query) {
-        List<Client> clients = this.clientService.filterByQuery(query);
+        List<Client> clients = this.iClientService.searchClientsByQuery(query);
         if(clients.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
