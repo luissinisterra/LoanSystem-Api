@@ -4,6 +4,9 @@ import com.loansytemapi.LoanSystem_Api.model.Address;
 import com.loansytemapi.LoanSystem_Api.model.Client;
 import com.loansytemapi.LoanSystem_Api.model.Loan;
 import com.loansytemapi.LoanSystem_Api.repository.ClientRepository;
+import com.loansytemapi.LoanSystem_Api.repository.imp.IClientRepository;
+import com.loansytemapi.LoanSystem_Api.repository.imp.ILoanRepository;
+import com.loansytemapi.LoanSystem_Api.service.imp.IClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,17 +16,16 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class ClientService {
-    private final ClientRepository clientRepository;
+public class ClientService implements IClientService {
+    private final IClientRepository clientRepository;
 
     @Autowired
-    public ClientService(ClientRepository clientRepository) {
+    public ClientService(IClientRepository clientRepository) {
         this.clientRepository = clientRepository;
         this.initSampleData();
     }
 
     public void initSampleData(){
-
         Address address = new Address(
                 "España",           // País
                 "Madrid",           // Departamento o provincia
@@ -49,27 +51,33 @@ public class ClientService {
         this.clientRepository.createClient(client);
     }
 
-    public List<Client> findAll() {
+    @Override
+    public List<Client> getAllClients() {
         return this.clientRepository.getAllClients();
     }
 
-    public Client findById(String id) {
+    @Override
+    public Client getClientById(String id) {
         return this.clientRepository.getClientById(id);
     }
 
-    public Client save(Client client) {
+    @Override
+    public Client createClient(Client client) {
         return this.clientRepository.createClient(client);
     }
 
-    public Client delete(String id) {
+    @Override
+    public Client deleteClient(String id) {
         return this.clientRepository.deleteClient(id);
     }
 
-    public Client update(String id, Client client) {
+    @Override
+    public Client updateClient(String id, Client client) {
         return this.clientRepository.updateClient(id, client);
     }
 
-    public List<Client> filterByQuery(String query) {
+    @Override
+    public List<Client> searchClientsByQuery(String query) {
         return this.clientRepository.searchClientsByQuery(query);
     }
 }
