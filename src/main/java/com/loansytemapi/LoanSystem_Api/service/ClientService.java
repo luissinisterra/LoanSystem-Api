@@ -35,9 +35,10 @@ public class ClientService implements IClientService {
         );
 
         Loan loan = new Loan(
-                "L001",               // ID del préstamo
                 null,                 // Aquí iría el cliente, se asignará después cuando lo usemos en Client
                 15000.00,             // Monto del préstamo
+                123,
+                123123,
                 LocalDate.of(2025, 3, 15)  // Fecha del préstamo (15 de marzo de 2025)
         );
 

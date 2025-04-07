@@ -1,5 +1,7 @@
 package com.loansytemapi.LoanSystem_Api.service;
 
+import com.loansytemapi.LoanSystem_Api.model.Address;
+import com.loansytemapi.LoanSystem_Api.model.Client;
 import com.loansytemapi.LoanSystem_Api.model.Loan;
 import com.loansytemapi.LoanSystem_Api.repository.LoanRepository;
 import com.loansytemapi.LoanSystem_Api.repository.imp.ILoanRepository;
@@ -22,20 +24,53 @@ public class LoanService implements ILoanService {
 
     // Método para inicializar datos de muestra
     public void initSampleData() {
+        // Crear direcciones válidas para los clientes
+        Address  address1 = new Address("Colombia", "Antioquia", "Medellín", "Calle 50 #34-21", "050010");
+        Address address2 = new Address("Colombia", "Cundinamarca", "Bogotá", "Carrera 15 #72-45", "110111");
+
+        // Crear clientes válidos
+        Client client1 = new Client(
+                "C001",
+                "Juan",
+                "Carlos",
+                "Pérez",
+                "Gómez",
+                35,
+                "juan.perez@example.com",
+                "3001234567",
+                address1
+        );
+
+        Client client2 = new Client(
+                "C002",
+                "María",
+                "Isabel",
+                "López",
+                "Rodríguez",
+                28,
+                "maria.lopez@example.com",
+                "3109876543",
+                address2
+        );
+
+        // Crear préstamos asociados a los clientes
         Loan loan1 = new Loan(
-                "L001",
-                null, // Aquí iría el cliente, se asignará después cuando lo usemos en Client
+                client1, // Asociar el cliente al préstamo
                 15000.00,
+                12312,
+                123213,
                 LocalDate.of(2025, 3, 15)
         );
 
         Loan loan2 = new Loan(
-                "L002",
-                null, // Aquí iría el cliente, se asignará después cuando lo usemos en Client
+                client2, // Asociar el cliente al préstamo
+                123213,
+                123123,
                 20000.00,
                 LocalDate.of(2024, 6, 1)
         );
 
+        // Guardar los préstamos en el repositorio (simulación)
         this.iLoanRepository.createLoan(loan1);
         this.iLoanRepository.createLoan(loan2);
     }
