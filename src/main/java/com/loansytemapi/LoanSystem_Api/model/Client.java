@@ -1,16 +1,16 @@
 package com.loansytemapi.LoanSystem_Api.model;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Client extends Person {
     private boolean active;
-    private Map<String, Loan> loans;
+    private List<Loan> loans;
 
     public Client(String id, String firstName, String secondName, String firstSurname, String secondSurname, int age, String email, String phone, Address address) {
         super(id, firstName, secondName, firstSurname, secondSurname, age, email, phone, address);
         this.active = true;
-        this.loans = new HashMap<>();
+        this.loans = new ArrayList<>();
     }
 
     public boolean isActive() {
@@ -21,11 +21,11 @@ public class Client extends Person {
         this.active = active;
     }
 
-    public Map<String, Loan> getLoans() {
+    public List<Loan> getLoans() {
         return loans;
     }
 
-    public void setLoans(Map<String, Loan> loans) {
+    public void setLoans(List<Loan> loans) {
         this.loans = loans;
     }
 }

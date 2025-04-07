@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,12 +43,13 @@ public class ClientService implements IClientService {
                 LocalDate.of(2025, 3, 15)  // Fecha del préstamo (15 de marzo de 2025)
         );
 
-        Map<String, Loan> loans = new HashMap<>();
-        loans.put(loan.getId(), loan);  // Añadimos el préstamo al mapa
-
         // Ahora creamos el cliente, pasándole los datos
         Client client = new Client("P12345", "Juan", "Carlos", "García", "López", 30,
                 "juan.garcia@example.com", "600123456", address);
+
+        List<Loan> loans = new ArrayList<>();
+        loans.add(loan);
+        client.setLoans(loans);
 
         this.iClientRepository.createClient(client);
     }
