@@ -1,7 +1,4 @@
 package com.loansytemapi.LoanSystem_Api.model;
-
-import lombok.*;
-
 public class Person {
     private String id;
     private String firstName;
