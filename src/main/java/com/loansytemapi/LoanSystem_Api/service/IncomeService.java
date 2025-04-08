@@ -35,13 +35,13 @@ public class IncomeService implements IIncomeService {
     public Income save(Income income) throws InvalidTextLengthException, InvalidAmmountException, IncompleteDataException{
         if (income.getIncomeDescription() == null || income.getIncomeDescription().isEmpty() || income.getIncomeType() == null
                 || income.getIncomeType().isEmpty() || income.getIncomeAmount() == 0) {
-            throw new IncompleteDataException("ERROR: Falta información valida para crear el gasto correctamente");
+            throw new IncompleteDataException("ERROR: Falta información valida para crear el ingreso correctamente");
         }
         if (income.getIncomeDescription().length() > 50) {
-            throw new InvalidTextLengthException("ERROR: La descripción del gasto no debe superar los 50 caracteres");
+            throw new InvalidTextLengthException("ERROR: La descripción del ingreso no debe superar los 50 caracteres");
         }
         if (income.getIncomeAmount() < 0) {
-            throw new InvalidAmmountException("ERROR: El valor del gasto no puede ser negativo o igual");
+            throw new InvalidAmmountException("ERROR: El valor del ingreso no puede ser negativo o igual");
         }
         return  incomeRepository.save(income);
     }
@@ -75,7 +75,7 @@ public class IncomeService implements IIncomeService {
     public Income getByid(String id) throws NotFoundException {
         Income i = incomeRepository.findById(id);
         if (i == null) {
-            throw new NotFoundException("ERROR: No se ha encontrado el gasto");
+            throw new NotFoundException("ERROR: No se ha encontrado el ingreso");
         }
         return i;
     }
@@ -84,7 +84,7 @@ public class IncomeService implements IIncomeService {
     public List<Income> getByFilters(String incomeType, Double minimumIncome, Double maximumIncome, Double incomeAmmount, String dateFilter) throws NotFoundException {
         List<Income> result = incomeRepository.getByFilter(incomeType, minimumIncome, maximumIncome, incomeAmmount, dateFilter);
         if (result.isEmpty()) {
-            throw new NotFoundException("ERROR: No se han encontrado gastos por los datos que suministro");
+            throw new NotFoundException("ERROR: No se han encontrado ingresos por los datos que suministro");
         }
         return result;
     }

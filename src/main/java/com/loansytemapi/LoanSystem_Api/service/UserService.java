@@ -26,7 +26,7 @@ public class UserService implements IUserService {
     }
     @Override
     public User saveUser(User user) throws InvalidUsernameException {
-        if (user.getUsername() == null || user.getUsername().isEmpty() || user.getUsername().length() > 10) {
+        if (user.getUsername() == null || user.getUsername().isEmpty() || user.getUsername().length() > 20) {
             throw new InvalidUsernameException("El nombre de usuario no puede estar vacio o ser de más de 10 caracteres");
         }
         return userRepository.save(user);
