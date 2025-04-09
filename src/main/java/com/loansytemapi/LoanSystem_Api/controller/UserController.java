@@ -79,4 +79,15 @@ public class UserController {
         List<User> users = userService.getUsers();
         return ResponseEntity.ok(users);
     }
+
+    @GetMapping("/api/load/{username}/{password}")
+    @Operation(summary = "Obtener el usuario logeado")
+    @ApiResponse(responseCode = "200", description = "Usuario obtenido exitosamente")
+    public ResponseEntity<User> loadUser(
+            @PathVariable(required = true) String username,
+            @PathVariable(required = true) String password) throws NotFoundException {
+
+        User user = userService.loadUser(username, password);
+        return ResponseEntity.ok(user);
+    }
 }
