@@ -43,4 +43,13 @@ public class UserRepository {
         }
         return null;
     }
+
+    public User loadUser(String username, String password) {
+        for (User user : baseDeDatos.values()) {
+            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+                return user;
+            }
+        }
+        return null;
+    }
 }

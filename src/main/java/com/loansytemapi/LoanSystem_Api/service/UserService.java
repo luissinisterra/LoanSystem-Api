@@ -55,4 +55,12 @@ public class UserService implements IUserService {
     public List<User> getUsers() {
         return userRepository.findAll();
     }
+
+    public User loadUser(String username, String password) throws NotFoundException {
+        User user = userRepository.loadUser(username, password);
+        if (user == null) {
+            throw new NotFoundException("User not found");
+        }
+        return user;
+    }
 }
