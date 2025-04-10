@@ -80,7 +80,7 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/api/load/{username}/{password}")
+    @GetMapping("/load/{username}/{password}")
     @Operation(summary = "Obtener el usuario logeado")
     @ApiResponse(responseCode = "200", description = "Usuario obtenido exitosamente")
     public ResponseEntity<User> loadUser(
