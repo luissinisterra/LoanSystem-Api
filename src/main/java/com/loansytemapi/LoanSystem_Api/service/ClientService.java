@@ -1,5 +1,6 @@
 package com.loansytemapi.LoanSystem_Api.service;
 
+import com.loansytemapi.LoanSystem_Api.exception.IncompleteDataException;
 import com.loansytemapi.LoanSystem_Api.model.Address;
 import com.loansytemapi.LoanSystem_Api.model.Client;
 import com.loansytemapi.LoanSystem_Api.model.Loan;
@@ -65,8 +66,11 @@ public class ClientService implements IClientService {
     }
 
     @Override
-    public Client createClient(Client client) {
-        return this.iClientRepository.createClient(client);
+    public Client createClient(Client client) throws IncompleteDataException {
+        if(validateFields(client)){
+            return this.iClientRepository.createClient(client);
+        }
+        throw new IncompleteDataException("Por favor complete todos los campos obligatorios.");
     }
 
     @Override
@@ -83,4 +87,20 @@ public class ClientService implements IClientService {
     public List<Client> searchClientsByQuery(String query) {
         return this.iClientRepository.searchClientsByQuery(query);
     }
+
+    private boolean validateFields(Client client) {
+        return client.getId() != null && !client.getId().isEmpty() &&
+                client.getFirstName() != null && !client.getFirstName().isEmpty() &&
+                client.getFirstSurname() != null && !client.getFirstSurname().isEmpty() &&
+                client.getAge() > 0 &&
+                client.getEmail() != null && !client.getEmail().isEmpty() &&
+                client.getPhone() != null && !client.getPhone().isEmpty() &&
+                client.getAddress() != null &&
+                client.getAddress().getCountry() != null && !client.getAddress().getCountry().isEmpty() &&
+                client.getAddress().getDeparment() != null && !client.getAddress().getDeparment().isEmpty() &&
+                client.getAddress().getCity() != null && !client.getAddress().getCity().isEmpty() &&
+                client.getAddress().getStreet() != null && !client.getAddress().getStreet().isEmpty() &&
+                client.getAddress().getPostalCode() != null && !client.getAddress().getPostalCode().isEmpty();
+    }
+
 }

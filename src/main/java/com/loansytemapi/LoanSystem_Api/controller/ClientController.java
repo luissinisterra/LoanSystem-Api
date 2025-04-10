@@ -1,5 +1,6 @@
 package com.loansytemapi.LoanSystem_Api.controller;
 
+import com.loansytemapi.LoanSystem_Api.exception.IncompleteDataException;
 import com.loansytemapi.LoanSystem_Api.model.Client;
 import com.loansytemapi.LoanSystem_Api.service.imp.IClientService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -60,7 +61,7 @@ public class ClientController {
             @ApiResponse(responseCode = "204", description = "El cuerpo de la solicitud está vacío")
     })
     @PostMapping
-    public ResponseEntity<Client> createClient(@RequestBody @Parameter(description = "Datos del cliente a crear") Client newClient) {
+    public ResponseEntity<Client> createClient(@RequestBody @Parameter(description = "Datos del cliente a crear") Client newClient) throws IncompleteDataException {
         if (newClient == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
