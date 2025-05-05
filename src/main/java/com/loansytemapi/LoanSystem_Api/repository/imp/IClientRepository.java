@@ -13,32 +13,6 @@ import java.util.Optional;
 @Repository
 public interface IClientRepository extends JpaRepository<Client, String> {
 
-    default Client createClient(Client client) {
-        return save(client);
-    }
-
-    default List<Client> getAllClients() {
-        return findAll();
-    }
-
-    default Client getClientById(String id) {
-        Optional<Client> optionalClient = findById(id);
-        return optionalClient.orElse(null);
-    }
-
-    default Client deleteClient(String id) {
-        Optional<Client> optionalClient = findById(id);
-        if (optionalClient.isPresent()) {
-            deleteById(id);
-        }
-        return optionalClient.orElse(null);
-    }
-
-    default Client updateClient(String id, Client updatedClient) {
-        updatedClient.setId(id);
-        return save(updatedClient);
-    }
-
     @Query("SELECT c FROM Client c WHERE " +
             "LOWER(c.firstName) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
             "LOWER(c.firstSurname) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
