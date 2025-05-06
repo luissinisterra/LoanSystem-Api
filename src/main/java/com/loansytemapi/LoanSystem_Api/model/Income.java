@@ -1,69 +1,83 @@
 package com.loansytemapi.LoanSystem_Api.model;
 
 import java.time.LocalDate;
-import java.util.UUID;
-
+import jakarta.persistence.*;
+@Entity
+@Table (name = "Incomes")
 public class Income {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    
+     @Column(name = "user_id", nullable = false)
+    private Integer user_id;
+     
+    @Column(name = "income_type", nullable = false)
+    private String income_type;
 
-    private String incomeID;
-    private String incomeType;
-    private String incomeDescription;
-    private double incomeAmount;
-    private LocalDate incomeDate;
-
-    public Income() {
-        this.incomeID = UUID.randomUUID().toString();
-        this.incomeDate = LocalDate.now();
+    @Column (name = "income_description", nullable = false)
+    private String income_description;
+    
+    @Column(name = "ammount", nullable = false)
+    private Integer ammount;
+    
+    @Column(name = "income_date", nullable = false)
+    private LocalDate income_date = LocalDate.now();
+    
+    public Income(){
     }
 
-    public Income(String incomeType, String incomeDescription, double incomeAmount) {
-        this.incomeID = UUID.randomUUID().toString();
-        this.incomeDate = LocalDate.now();
-        this.incomeType = incomeType;
-        this.incomeDescription = incomeDescription;
-        this.incomeAmount = incomeAmount;
-    }
-
+    
     //Getters and setters
 
-
-    public String getIncomeID() {
-        return incomeID;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIncomeID(String incomeID) {
-        this.incomeID = incomeID;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public String getIncomeType() {
-        return incomeType;
+    public Integer getUser_id() {
+        return user_id;
     }
 
-    public void setIncomeType(String incomeType) {
-        this.incomeType = incomeType;
+    public void setUser_id(Integer user_id) {
+        this.user_id = user_id;
     }
 
-    public String getIncomeDescription() {
-        return incomeDescription;
+    public String getIncome_type() {
+        return income_type;
     }
 
-    public void setIncomeDescription(String incomeDescription) {
-        this.incomeDescription = incomeDescription;
+    public void setIncome_type(String income_type) {
+        this.income_type = income_type;
     }
 
-    public double getIncomeAmount() {
-        return incomeAmount;
+    public String getIncome_description() {
+        return income_description;
     }
 
-    public void setIncomeAmount(double incomeAmount) {
-        this.incomeAmount = incomeAmount;
+    public void setIncome_description(String income_description) {
+        this.income_description = income_description;
     }
 
-    public LocalDate getIncomeDate() {
-        return incomeDate;
+    public Integer getAmmount() {
+        return ammount;
     }
 
-    public void setIncomeDate(LocalDate incomeDate) {
-        this.incomeDate = incomeDate;
+    public void setAmmount(Integer ammount) {
+        this.ammount = ammount;
     }
+
+    public LocalDate getIncome_date() {
+        return income_date;
+    }
+
+    public void setIncome_date(LocalDate income_date) {
+        this.income_date = income_date;
+    }
+    
+    
+    
 }
