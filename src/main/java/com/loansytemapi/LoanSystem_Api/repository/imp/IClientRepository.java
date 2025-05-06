@@ -1,13 +1,22 @@
 package com.loansytemapi.LoanSystem_Api.repository.imp;
 
 import com.loansytemapi.LoanSystem_Api.model.Client;
-import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-public interface IClientRepository {
-    List<Client> getAllClients();
-    Client getClientById(String id);
-    Client createClient(Client client);
-    Client updateClient(String id, Client client);
-    Client deleteClient(String id);
-    List<Client> searchClientsByQuery(String query);
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface IClientRepository extends JpaRepository<Client, String> {
+
+    @Query("SELECT c FROM Client c WHERE " +
+            "LOWER(c.firstName) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+            "LOWER(c.firstSurname) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+            "LOWER(c.email) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+            "LOWER(c.id) LIKE LOWER(CONCAT('%', :query, '%'))")
+    List<Client> searchClientsByQuery(@Param("query") String query);
 }
