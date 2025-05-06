@@ -3,52 +3,48 @@ package com.loansytemapi.LoanSystem_Api.service;
 import com.loansytemapi.LoanSystem_Api.exception.InvalidUsernameException;
 import com.loansytemapi.LoanSystem_Api.exception.NotFoundException;
 import com.loansytemapi.LoanSystem_Api.model.User;
-import com.loansytemapi.LoanSystem_Api.repository.UserRepository;
+import com.loansytemapi.LoanSystem_Api.repository.imp.IUserRepository;
 import com.loansytemapi.LoanSystem_Api.service.imp.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService implements IUserService {
-    private final UserRepository userRepository;
+
+    private final IUserRepository userRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository) throws InvalidUsernameException {
+    public UserService(IUserRepository userRepository) {
         this.userRepository = userRepository;
-        initSampleData();
     }
 
-    private void initSampleData() throws InvalidUsernameException {
-        saveUser(new User("Luis Eduardo", "Sinisterra", "luchoporst@gmail.com", "holamundo", "luchoporst", "M"));
-        saveUser(new User("Alejandro", "Ballesteros", "alej0nt666@gmail.com", "holamundo", "alej0nt", "M"));
-    }
     @Override
     public User saveUser(User user) throws InvalidUsernameException {
         if (user.getUsername() == null || user.getUsername().isEmpty() || user.getUsername().length() > 20) {
-            throw new InvalidUsernameException("El nombre de usuario no puede estar vacio o ser de más de 10 caracteres");
+            throw new InvalidUsernameException("El nombre de usuario no puede estar vacío o tener más de 20 caracteres");
         }
         return userRepository.save(user);
     }
 
     @Override
-    public void removeUser(String id) throws NotFoundException {
-        User u = userRepository.findById(id);
-        if (u == null) {
-            throw new NotFoundException("User not found");
+    public void removeUser(Integer id) throws NotFoundException {
+        Optional<User> userOpt = userRepository.findById(id);
+        if (userOpt.isEmpty()) {
+            throw new NotFoundException("Usuario no encontrado");
         }
         userRepository.deleteById(id);
     }
 
     @Override
     public User updateUser(User user) throws NotFoundException {
-        User u = userRepository.findById(user.getId());
-        if (u == null) {
-            throw new NotFoundException("User not found");
+        Optional<User> userOpt = userRepository.findById(user.getId());
+        if (userOpt.isEmpty()) {
+            throw new NotFoundException("Usuario no encontrado");
         }
-        user.setId(u.getId());
-        return userRepository.update(user);
+        return userRepository.save(user);
     }
 
     @Override
@@ -56,11 +52,9 @@ public class UserService implements IUserService {
         return userRepository.findAll();
     }
 
+    @Override
     public User loadUser(String username, String password) throws NotFoundException {
-        User user = userRepository.loadUser(username, password);
-        if (user == null) {
-            throw new NotFoundException("User not found");
-        }
-        return user;
+        Optional<User> userOpt = userRepository.loadUser(username, password);
+        return userOpt.orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
     }
 }

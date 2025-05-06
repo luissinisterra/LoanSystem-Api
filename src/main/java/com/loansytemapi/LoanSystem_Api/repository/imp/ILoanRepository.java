@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import java.util.List;
 
-public interface ILoanRepository extends JpaRepository<Loan, String> {
+public interface ILoanRepository extends JpaRepository<Loan, Integer> {
 
     @Query("SELECT l FROM Loan l WHERE " +
             "LOWER(l.id) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
