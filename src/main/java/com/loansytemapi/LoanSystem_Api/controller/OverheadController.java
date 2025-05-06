@@ -5,8 +5,7 @@ import com.loansytemapi.LoanSystem_Api.exception.InvalidAmmountException;
 import com.loansytemapi.LoanSystem_Api.exception.InvalidTextLengthException;
 import com.loansytemapi.LoanSystem_Api.exception.NotFoundException;
 import com.loansytemapi.LoanSystem_Api.model.Overhead;
-import com.loansytemapi.LoanSystem_Api.service.OverheadService;
-import com.loansytemapi.LoanSystem_Api.service.imp.IGastoService;
+import com.loansytemapi.LoanSystem_Api.service.imp.IOverheadService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,10 +23,10 @@ import java.util.List;
 @Tag(name = "Overheads", description = "API for managing user overheads (expenses)")
 public class OverheadController {
 
-    private final IGastoService overheadService;
+    private final IOverheadService overheadService;
 
     @Autowired
-    public OverheadController(IGastoService overheadService) {
+    public OverheadController(IOverheadService overheadService) {
         this.overheadService = overheadService;
     }
 
@@ -53,7 +52,7 @@ public class OverheadController {
             @ApiResponse(responseCode = "404", description = "Overhead not found")
     })
     public ResponseEntity<Void> deleteOverhead(
-            @PathVariable @Parameter(description = "ID of the overhead to delete") String id)
+            @PathVariable @Parameter(description = "ID of the overhead to delete") Integer id)
             throws NotFoundException {
         overheadService.remove(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -94,7 +93,23 @@ public class OverheadController {
             @ApiResponse(responseCode = "404", description = "Overhead not found")
     })
     public ResponseEntity<Overhead> getOverheadById(
-            @PathVariable @Parameter(description = "ID of the overhead to retrieve") String id)
+            @PathVariable @Parameter(description = "ID of the overhead to retrieve") Integer id)
+            throws NotFoundException {
+        Overhead found = overheadService.getByid(id);
+        return new ResponseEntity<>(found, HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Get overhead by ID",
+            description = "Retrieves a specific overhead by its ID"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Overhead retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Overhead not found with the given ID")
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity<Overhead> getOverheadByUserId(
+            @PathVariable @Parameter(description = "ID of the overhead to retrieve") Integer id)
             throws NotFoundException {
         Overhead found = overheadService.getByid(id);
         return new ResponseEntity<>(found, HttpStatus.OK);

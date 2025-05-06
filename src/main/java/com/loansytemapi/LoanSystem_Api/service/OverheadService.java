@@ -3,7 +3,7 @@ package com.loansytemapi.LoanSystem_Api.service;
 import com.loansytemapi.LoanSystem_Api.exception.*;
 import com.loansytemapi.LoanSystem_Api.model.Overhead;
 import com.loansytemapi.LoanSystem_Api.repository.OverheadRepository;
-import com.loansytemapi.LoanSystem_Api.service.imp.IGastoService;
+import com.loansytemapi.LoanSystem_Api.service.imp.IOverheadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class OverheadService implements IGastoService {
+public class OverheadService implements IOverheadService {
 
     private final OverheadRepository overheadRepository;
 
@@ -22,38 +22,33 @@ public class OverheadService implements IGastoService {
         this.overheadRepository = overheadRepository;
     }
     @Override
-    public Overhead save(Overhead overhead) throws InvalidTextLengthException, InvalidAmmountException, IncompleteDataException {
-        if (overhead.getOverhead_description() == null || overhead.getOverhead_description().isEmpty() ||
-            overhead.getOverhead_type() == null || overhead.getOverhead_type().isEmpty() ||
-            overhead.getAmmount() == null || overhead.getAmmount() <= 0 ||
-            overhead.getUser_id() == null) {
-            throw new IncompleteDataException("ERROR: Datos incompletos");
-        }
-
+    public Overhead save(Overhead overhead) throws InvalidTextLengthException, InvalidAmmountException{
         if (overhead.getOverhead_description().length() > 50) {
-            throw new InvalidTextLengthException("ERROR: La descripción no debe superar los 50 caracteres");
+            throw new InvalidTextLengthException("The income description must not exceed 50 characters.");
         }
-
+        if (overhead.getAmmount() <= 0){
+            throw new InvalidAmmountException("The income amount must be greater than zero.");
+        }
         return overheadRepository.save(overhead);
     }
 
     @Override
-    public void remove(String id) throws NotFoundException {
-        int gastoId = Integer.parseInt(id);
-        if (!overheadRepository.existsById(gastoId)) {
-            throw new NotFoundException("ERROR: Gasto no encontrado");
+    public void remove(Integer id) throws NotFoundException {
+        Overhead overhead = overheadRepository.findById(id).get();
+        if (overhead == null) {
+            throw new NotFoundException("The overhead with id " + id + " does not exist.");
         }
-        overheadRepository.deleteById(gastoId);
+        overheadRepository.delete(overhead);
     }
 
     @Override
     public Overhead update(Overhead gasto) throws NotFoundException {
-        Integer id = gasto.getId();
-        Optional<Overhead> existing = overheadRepository.findById(id);
-        if (existing.isEmpty()) {
-            throw new NotFoundException("ERROR: Gasto no encontrado");
+        Overhead overhead = overheadRepository.findById(gasto.getId()).get();
+        if (overhead == null) {
+            throw new NotFoundException("The overhead with id " + gasto.getId() + " does not exist.");
         }
-        gasto.setOverhead_date(existing.get().getOverhead_date()); // Mantiene la fecha original
+        gasto.setOverhead_date(overhead.getOverhead_date());
+        gasto.setId(overhead.getId());
         return overheadRepository.save(gasto);
     }
 
@@ -63,10 +58,21 @@ public class OverheadService implements IGastoService {
     }
 
     @Override
-    public Overhead getByid(String id) throws NotFoundException {
-        int gastoId = Integer.parseInt(id);
-        return overheadRepository.findById(gastoId)
-                .orElseThrow(() -> new NotFoundException("ERROR: Gasto no encontrado"));
+    public Overhead getByid(Integer id) throws NotFoundException {
+        Overhead overhead = overheadRepository.findById(id).get();
+        if (overhead == null) {
+            throw new NotFoundException("The overhead with id " + id + " does not exist.");
+        }
+        return overhead;
+    }
+
+    @Override
+    public List<Overhead> getByUserId(Integer userId) throws NotFoundException {
+        List<Overhead> overheads = overheadRepository.findByUserId(userId);
+        if (overheads.isEmpty() || overheads == null){
+            throw new NotFoundException("Not overheads found.");
+        }
+        return overheads;
     }
 
     @Override

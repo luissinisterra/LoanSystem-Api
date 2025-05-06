@@ -7,12 +7,13 @@ import com.loansytemapi.LoanSystem_Api.model.Overhead;
 import com.loansytemapi.LoanSystem_Api.exception.NotFoundException;
 import java.util.List;
 
-public interface IGastoService {
+public interface IOverheadService {
 
     Overhead save(Overhead gasto)throws InvalidTextLengthException, InvalidAmmountException, IncompleteDataException;
-    void remove(String idGasto) throws NotFoundException;
+    void remove(Integer idGasto) throws NotFoundException;
     Overhead update(Overhead gasto) throws NotFoundException;
     List<Overhead> getAll();
-    Overhead getByid(String idGasto) throws NotFoundException;
-    public List<Overhead> getByFilters(String tipoDeGasto, double gastoMinimo, double gastoMaximo, double montoGasto, String filtroFecha);
+    List<Overhead> getByUserId(Integer idUser) throws NotFoundException;
+    Overhead getByid(Integer idGasto) throws NotFoundException;
+    List<Overhead> getByFilters(String tipoDeGasto, double gastoMinimo, double gastoMaximo, double montoGasto, String filtroFecha);
 }
