@@ -1,91 +1,105 @@
 package com.loansytemapi.LoanSystem_Api.service;
 
-import com.loansytemapi.LoanSystem_Api.exception.IncompleteDataException;
 import com.loansytemapi.LoanSystem_Api.exception.InvalidAmmountException;
 import com.loansytemapi.LoanSystem_Api.exception.InvalidTextLengthException;
 import com.loansytemapi.LoanSystem_Api.exception.NotFoundException;
 import com.loansytemapi.LoanSystem_Api.model.Income;
-import com.loansytemapi.LoanSystem_Api.repository.GastoRepository;
 import com.loansytemapi.LoanSystem_Api.repository.IncomeRepository;
-import com.loansytemapi.LoanSystem_Api.service.imp.IIncomeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import com.loansytemapi.LoanSystem_Api.service.imp.IIncomeService;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
 public class IncomeService implements IIncomeService {
 
-    private final IncomeRepository incomeRepository;
-
     @Autowired
-    public IncomeService(IncomeRepository incomeRepository) throws IncompleteDataException, InvalidTextLengthException, InvalidAmmountException {
+    private IncomeRepository incomeRepository;
+
+    public IncomeService(IncomeRepository incomeRepository) {
         this.incomeRepository = incomeRepository;
-        initSampleData();
-    }
-
-
-    private void initSampleData() throws IncompleteDataException, InvalidTextLengthException, InvalidAmmountException {
-        save (new Income("Pago", "Mary pago la cuota semanal", 500));
-        save (new Income("Pago", "Juan pago la cuota mensual", 50000));
-        save (new Income("Ingreso", "Ingreso del 20% del pago de Mary", 80000));
     }
 
     @Override
-    public Income save(Income income) throws InvalidTextLengthException, InvalidAmmountException, IncompleteDataException{
-        if (income.getIncomeDescription() == null || income.getIncomeDescription().isEmpty() || income.getIncomeType() == null
-                || income.getIncomeType().isEmpty() || income.getIncomeAmount() == 0) {
-            throw new IncompleteDataException("ERROR: Falta información valida para crear el ingreso correctamente");
+    public Income saveIncome(Income income) throws InvalidTextLengthException, InvalidAmmountException {
+        if (income.getIncome_description().length() > 50){
+            throw new InvalidTextLengthException("The income description must not exceed 50 characters.");
         }
-        if (income.getIncomeDescription().length() > 50) {
-            throw new InvalidTextLengthException("ERROR: La descripción del ingreso no debe superar los 50 caracteres");
+        if (income.getAmmount() <= 0){
+            throw new InvalidAmmountException("The amount must be greater than zero.");
         }
-        if (income.getIncomeAmount() < 0) {
-            throw new InvalidAmmountException("ERROR: El valor del ingreso no puede ser negativo o igual");
-        }
-        return  incomeRepository.save(income);
+        return incomeRepository.save(income);
     }
 
     @Override
-    public void remove(String id) throws NotFoundException {
-        Income i = incomeRepository.findById(id);
-        if (i == null) {
-            throw new NotFoundException("ERROR: No se ha encontrado el ingreso que quiere eliminar");
-        }
-        incomeRepository.remove(id);
-    }
-
-    @Override
-    public Income update(Income income) throws NotFoundException {
-        Income i = incomeRepository.findById(income.getIncomeID());
-        if (i == null) {
-            throw new NotFoundException("ERROR: No se ha encontrado el ingreso que desea actualizar");
-        }
-        income.setIncomeDate(i.getIncomeDate());
-        incomeRepository.update(income);
-        return income;
-    }
-
-    @Override
-    public List<Income> getAll() {
+    public List<Income> getAllIncomes() {
         return incomeRepository.findAll();
     }
 
     @Override
-    public Income getByid(String id) throws NotFoundException {
-        Income i = incomeRepository.findById(id);
-        if (i == null) {
-            throw new NotFoundException("ERROR: No se ha encontrado el ingreso");
+    public Income getIncomeById(Integer id) throws NotFoundException {
+        Income income = incomeRepository.findById(id).get();
+        if (income == null){
+            throw new NotFoundException ("Income not found");
         }
-        return i;
+        return income;
     }
 
     @Override
-    public List<Income> getByFilters(String incomeType, Double minimumIncome, Double maximumIncome, Double incomeAmmount, String dateFilter) throws NotFoundException {
-        List<Income> result = incomeRepository.getByFilter(incomeType, minimumIncome, maximumIncome, incomeAmmount, dateFilter);
-        if (result.isEmpty()) {
-            throw new NotFoundException("ERROR: No se han encontrado ingresos por los datos que suministro");
+    public void deleteIncome(Integer id) throws NotFoundException {
+        Income income = incomeRepository.findById(id).get();
+        if (income == null){
+            throw new NotFoundException("Income not found");
         }
-        return result;
+        incomeRepository.delete(income);
     }
+
+    @Override
+    public Income updateIncome(Income income) throws NotFoundException {
+        Income i = incomeRepository.findById(income.getId()).get();
+        if (income == null){
+            throw new NotFoundException("Income not found");
+        }
+        income.setId(i.getId());
+        income.setIncome_date(i.getIncome_date());
+        return incomeRepository.save(income);
+    }
+
+    @Override
+    public List<Income> getByUserId(Integer userId) throws NotFoundException {
+        List<Income> incomes = incomeRepository.findByUserId(userId);
+        if (incomes == null){
+            throw new NotFoundException("Incomes not found");
+        }
+        return incomes;
+    }
+
+    @Override
+    public List<Income> getByFilter(String incomeType, Integer min, Integer max, Integer exactAmount, String dateFilter) {
+        List<Income> all = incomeRepository.findAll();
+        return all.stream()
+                .filter(i -> incomeType == null || i.getIncome_type().equalsIgnoreCase(incomeType))
+                .filter(i -> min == null || i.getAmmount() > min)
+                .filter(i -> max == null || i.getAmmount() < max)
+                .filter(i -> exactAmount == null || i.getAmmount().equals(exactAmount))
+                .filter(i -> cumpleFiltroFecha(i.getIncome_date(), dateFilter))
+                .toList();
+    }
+
+    // Lógica para filtrar por fecha
+    private boolean cumpleFiltroFecha(LocalDate fecha, String filtroFecha) {
+        LocalDate ahora = LocalDate.now();
+        LocalDate fechaLimite = switch (filtroFecha == null ? "" : filtroFecha.toLowerCase()) {
+            case "1 semana" -> ahora.minusWeeks(1);
+            case "1 mes" -> ahora.minusMonths(1);
+            case "3 meses" -> ahora.minusMonths(3);
+            case "6 meses" -> ahora.minusMonths(6);
+            case "1 año" -> ahora.minusYears(1);
+            default -> null;
+        };
+        return fechaLimite == null || fecha.isAfter(fechaLimite);
+    }
+
+
 }

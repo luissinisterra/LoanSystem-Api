@@ -1,6 +1,5 @@
 package com.loansytemapi.LoanSystem_Api.controller;
 
-import com.loansytemapi.LoanSystem_Api.exception.IncompleteDataException;
 import com.loansytemapi.LoanSystem_Api.exception.InvalidAmmountException;
 import com.loansytemapi.LoanSystem_Api.exception.InvalidTextLengthException;
 import com.loansytemapi.LoanSystem_Api.exception.NotFoundException;
@@ -19,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/incomes")
-@Tag(name = "Ingresos", description = "API para la gestión de ingresos")
+@Tag(name = "Incomes", description = "API for income management")
 public class IncomeController {
 
     private final IIncomeService incomeService;
@@ -29,72 +28,84 @@ public class IncomeController {
         this.incomeService = incomeService;
     }
 
-    @Operation(summary = "Obtener todos los ingresos", description = "Retorna una lista de todos los ingresos registrados")
+    @Operation(summary = "Get all incomes", description = "Returns a list of all registered incomes")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista de ingresos obtenida correctamente")
+            @ApiResponse(responseCode = "200", description = "Income list retrieved successfully")
     })
     @GetMapping
     public ResponseEntity<List<Income>> getAll() {
-        return ResponseEntity.ok(incomeService.getAll());
+        return ResponseEntity.ok(incomeService.getAllIncomes());
     }
 
-    @Operation(summary = "Obtener un ingreso por ID", description = "Busca un ingreso específico por su ID")
+    @Operation(summary = "Get income by ID", description = "Find a specific income by its ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Ingreso encontrado"),
-            @ApiResponse(responseCode = "404", description = "Ingreso no encontrado")
+            @ApiResponse(responseCode = "200", description = "Income found"),
+            @ApiResponse(responseCode = "404", description = "Income not found")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Income> getById(@PathVariable @Parameter(description = "ID del ingreso que queremos encontrar") String id) throws NotFoundException {
-        return ResponseEntity.ok(incomeService.getByid(id));
+    public ResponseEntity<Income> getById(@PathVariable @Parameter(description = "ID of the income to retrieve") Integer id) throws NotFoundException {
+        return ResponseEntity.ok(incomeService.getIncomeById(id));
     }
 
-    @Operation(summary = "Crear un nuevo ingreso", description = "Guarda un nuevo ingreso en el sistema")
+    @Operation(
+            summary = "Get incomes by user ID",
+            description = "Returns a list of incomes associated with a specific user ID"
+    )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Ingreso creado exitosamente"),
-            @ApiResponse(responseCode = "400", description = "Datos inválidos para la creación")
+            @ApiResponse(responseCode = "200", description = "Incomes retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "No incomes found for the specified user ID")
+    })
+    @GetMapping("/userIncomes/{userId}")
+    public ResponseEntity<List<Income>> getIncomesByUserId(
+            @PathVariable @Parameter(description = "User ID to retrieve incomes for") Integer userId) throws NotFoundException {
+        return ResponseEntity.ok(incomeService.getByUserId(userId));
+    }
+
+    @Operation(summary = "Create a new income", description = "Saves a new income in the system")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Income created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid data for creation")
     })
     @PostMapping
-    public ResponseEntity<Income> save(@RequestBody Income income) throws IncompleteDataException, InvalidTextLengthException, InvalidAmmountException {
-        return ResponseEntity.status(201).body(incomeService.save(income));
+    public ResponseEntity<Income> save(@RequestBody Income income) throws InvalidTextLengthException, InvalidAmmountException {
+        return ResponseEntity.status(201).body(incomeService.saveIncome(income));
     }
 
-    @Operation(summary = "Actualizar un ingreso", description = "Modifica un ingreso existente")
+    @Operation(summary = "Update an income", description = "Modifies an existing income")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Ingreso actualizado correctamente"),
-            @ApiResponse(responseCode = "404", description = "Ingreso no encontrado")
+            @ApiResponse(responseCode = "200", description = "Income updated successfully"),
+            @ApiResponse(responseCode = "404", description = "Income not found")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Income> update(@PathVariable @Parameter(description = "ID del ingreso que queremos editar") String id, @RequestBody Income income) throws NotFoundException {
-        income.setIncomeID(id);
-        Income i = incomeService.update(income);
-        return ResponseEntity.ok(i);
+    public ResponseEntity<Income> update(@PathVariable @Parameter(description = "ID of the income to update") Integer id, @RequestBody Income income) throws NotFoundException {
+        income.setId(id);
+        return ResponseEntity.ok(incomeService.updateIncome(income));
     }
 
-    @Operation(summary = "Eliminar un ingreso", description = "Elimina un ingreso según su ID")
+    @Operation(summary = "Delete an income", description = "Deletes an income by its ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Ingreso eliminado correctamente"),
-            @ApiResponse(responseCode = "404", description = "Ingreso no encontrado")
+            @ApiResponse(responseCode = "204", description = "Income deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Income not found")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> remove(@PathVariable @Parameter(description = "ID del ingreso que queremos eliminar") String id) throws NotFoundException {
-        incomeService.remove(id);
+    public ResponseEntity<Void> remove(@PathVariable @Parameter(description = "ID of the income to delete") Integer id) throws NotFoundException {
+        incomeService.deleteIncome(id);
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Filtrar ingresos", description = "Obtiene una lista de ingresos según los criterios de búsqueda")
+    @Operation(summary = "Filter incomes", description = "Returns a list of incomes based on filter criteria")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista de ingresos filtrada correctamente"),
-            @ApiResponse(responseCode = "404", description = "No se encontraron ingresos con los filtros proporcionados")
+            @ApiResponse(responseCode = "200", description = "Filtered income list retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "No incomes found with the provided filters")
     })
     @GetMapping("/filter")
     public ResponseEntity<List<Income>> getByFilters(
-            @RequestParam(required = false) @Parameter(description = "Tipo de ingreso por el que queremos filtrar (opcional)") String incomeType,
-            @RequestParam(required = false) @Parameter(description = "Valor mínimo de ingreso por el que queremos filtrar (opcional)") Double minimumIncome,
-            @RequestParam(required = false) @Parameter(description = "Valor máximo de ingreso por el que queremos filtrar (opcional)") Double maximumIncome,
-            @RequestParam(required = false) @Parameter(description = "Valor específico por el que queremos filtrar (opcional)") Double incomeAmmount,
-            @RequestParam(required = false) @Parameter(description = "Filtro de fechas (opcional)") String dateFilter
-    ) throws NotFoundException {
-        return ResponseEntity.ok(incomeService.getByFilters(incomeType, minimumIncome, maximumIncome, incomeAmmount, dateFilter));
+            @RequestParam(required = false) @Parameter(description = "Type of income to filter by (optional)") String incomeType,
+            @RequestParam(required = false) @Parameter(description = "Minimum income value to filter by (optional)") Integer minimumIncome,
+            @RequestParam(required = false) @Parameter(description = "Maximum income value to filter by (optional)") Integer maximumIncome,
+            @RequestParam(required = false) @Parameter(description = "Exact income value to filter by (optional)") Integer incomeAmmount,
+            @RequestParam(required = false) @Parameter(description = "Date filter (optional)") String dateFilter)
+            throws NotFoundException {
+        return ResponseEntity.ok(incomeService.getByFilter(incomeType, minimumIncome, maximumIncome, incomeAmmount, dateFilter));
     }
 }
-
