@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface IClientService {
     List<Client> getAllClients();
-    Client getClientById(String id);
+    Client getClientById(int id);
     Client createClient(Client client) throws IncompleteDataException;
-    Client updateClient(String id, Client client);
-    Client deleteClient(String id);
+    Client updateClient(int id, Client client);
+    Client deleteClient(int id);
     List<Client> searchClientsByQuery(String query);
 }

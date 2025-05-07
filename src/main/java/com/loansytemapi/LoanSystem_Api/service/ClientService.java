@@ -25,20 +25,17 @@ public class ClientService implements IClientService {
     }
 
     @Override
-    public Client getClientById(String id) {
+    public Client getClientById(int id) {
         return iClientRepository.findById(id).orElse(null);
     }
 
     @Override
     public Client createClient(Client client) throws IncompleteDataException {
-        if (validateFields(client)) {
-            return iClientRepository.save(client);
-        }
-        throw new IncompleteDataException("Por favor complete todos los campos obligatorios.");
+        return iClientRepository.save(client);
     }
 
     @Override
-    public Client deleteClient(String id) {
+    public Client deleteClient(int id) {
         Client client = getClientById(id);
         if (client != null) {
             iClientRepository.deleteById(id);
@@ -47,7 +44,7 @@ public class ClientService implements IClientService {
     }
 
     @Override
-    public Client updateClient(String id, Client updatedClient) {
+    public Client updateClient(int id, Client updatedClient) {
         updatedClient.setId(id);
         return iClientRepository.save(updatedClient);
     }
@@ -57,18 +54,4 @@ public class ClientService implements IClientService {
         return iClientRepository.searchClientsByQuery(query);
     }
 
-    private boolean validateFields(Client client) {
-        return client.getId() != null && !client.getId().isEmpty() &&
-                client.getFirstName() != null && !client.getFirstName().isEmpty() &&
-                client.getFirstSurname() != null && !client.getFirstSurname().isEmpty() &&
-                client.getAge() > 0 &&
-                client.getEmail() != null && !client.getEmail().isEmpty() &&
-                client.getPhone() != null && !client.getPhone().isEmpty() &&
-                client.getAddress() != null &&
-                client.getAddress().getCountry() != null && !client.getAddress().getCountry().isEmpty() &&
-                client.getAddress().getDeparment() != null && !client.getAddress().getDeparment().isEmpty() &&
-                client.getAddress().getCity() != null && !client.getAddress().getCity().isEmpty() &&
-                client.getAddress().getStreet() != null && !client.getAddress().getStreet().isEmpty() &&
-                client.getAddress().getPostalCode() != null && !client.getAddress().getPostalCode().isEmpty();
-    }
 }
