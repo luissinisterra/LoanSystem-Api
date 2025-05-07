@@ -1,16 +1,42 @@
 package com.loansytemapi.LoanSystem_Api.model;
-public class Person {
-    private String id;
-    private String firstName;
-    private String secondName;
-    private String firstSurname;
-    private String secondSurname;
-    private int age;
-    private String email;
-    private String phone;
-    private Address address;
 
-    public Person(String id, String firstName, String secondName, String firstSurname, String secondSurname, int age, String email, String phone, Address address) {
+import jakarta.persistence.*;
+
+@Entity
+public class Person {
+    @Id
+    private int id;
+
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
+
+    @Column(name = "second_name", nullable = false)
+    private String secondName;
+
+    @Column(name = "first_name", nullable = false)
+    private String firstSurname;
+
+    @Column(name = "second_surname", nullable = false)
+    private String secondSurname;
+
+    @Column(name = "age", nullable = false)
+    private int age;
+
+    @Column(name = "email", nullable = false)
+    private String email;
+
+    @Column(name = "phone", nullable = false)
+    private String phone;
+
+    @Column(name = "address", nullable = false)
+    private int addressId;
+
+    @Column(name = "user_id", nullable = false)
+    private int userId;
+
+    public Person() {}
+
+    public Person(int id, String firstName, String secondName, String firstSurname, String secondSurname, int age, String email, String phone, int addressId) {
         this.id = id;
         this.firstName = firstName;
         this.secondName = secondName;
@@ -19,14 +45,14 @@ public class Person {
         this.age = age;
         this.email = email;
         this.phone = phone;
-        this.address = address;
+        this.addressId = addressId;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -86,12 +112,12 @@ public class Person {
         this.phone = phone;
     }
 
-    public Address getAddress() {
-        return address;
+    public int getAddress() {
+        return addressId;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setAddress(int addressId) {
+        this.addressId = addressId;
     }
 }
 
