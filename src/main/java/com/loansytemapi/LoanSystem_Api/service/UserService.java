@@ -30,7 +30,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void removeUser(Integer id) throws NotFoundException {
+    public void removeUser(int id) throws NotFoundException {
         Optional<User> userOpt = userRepository.findById(id);
         if (userOpt.isEmpty()) {
             throw new NotFoundException("Usuario no encontrado");
