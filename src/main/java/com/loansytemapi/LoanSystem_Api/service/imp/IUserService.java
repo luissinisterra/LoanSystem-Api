@@ -8,7 +8,9 @@ import java.util.List;
 
 public interface IUserService {
     User saveUser(User user) throws InvalidUsernameException;
-    void removeUser(String id)throws NotFoundException;
+    void removeUser(int id)throws NotFoundException;
     User updateUser(User user) throws NotFoundException;
     List<User> getUsers();
+
+    User loadUser(String username, String password) throws NotFoundException;
 }

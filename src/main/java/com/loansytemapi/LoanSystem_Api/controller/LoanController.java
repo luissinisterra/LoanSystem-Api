@@ -47,7 +47,7 @@ public class LoanController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<Loan> getLoanById(
-            @PathVariable @Parameter(description = "ID del préstamo a buscar") String id) {
+            @PathVariable @Parameter(description = "ID del préstamo a buscar") int id) {
         Loan loan = this.iLoanService.getLoanById(id);
         if (loan == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -76,7 +76,7 @@ public class LoanController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<Loan> updateLoan(
-            @PathVariable @Parameter(description = "ID del préstamo a actualizar") String id,
+            @PathVariable @Parameter(description = "ID del préstamo a actualizar") int id,
             @RequestBody Loan updatedLoan) {
         if (updatedLoan == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -92,7 +92,7 @@ public class LoanController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Loan> deleteLoan(
-            @PathVariable @Parameter(description = "ID del préstamo a eliminar") String id) {
+            @PathVariable @Parameter(description = "ID del préstamo a eliminar") int id) {
         Loan loan = this.iLoanService.deleteLoan(id);
         if (loan == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

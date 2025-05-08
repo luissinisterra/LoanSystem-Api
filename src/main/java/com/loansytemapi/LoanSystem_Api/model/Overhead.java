@@ -10,7 +10,7 @@ public class Overhead {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     
-     @Column(name = "user_id", nullable = false)
+    @Column(name = "user_id", nullable = false)
     private Integer user_id;
      
     @Column(name = "overhead_type", nullable = false)
@@ -25,12 +25,9 @@ public class Overhead {
     @Column(name = "overhead_date", nullable = false)
     private LocalDate overhead_date = LocalDate.now();
     
-    public Overhead(){
-    }
+    public Overhead(){}
 
-    
     //Getters and setters
-
     public Integer getId() {
         return id;
     }

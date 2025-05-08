@@ -5,9 +5,9 @@ import java.util.List;
 
 public interface ILoanService {
     List<Loan> getAllLoans();
-    Loan getLoanById(String id);
-    Loan deleteLoan(String id);
+    Loan getLoanById(int id);
+    Loan deleteLoan(int id);
     Loan createLoan(Loan loan);
-    Loan updateLoan(String id, Loan loan);
+    Loan updateLoan(int id, Loan loan);
     List<Loan> searchLoansByQuery(String query);
 }

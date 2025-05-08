@@ -47,7 +47,7 @@ public class ClientController {
             @ApiResponse(responseCode = "204", description = "Cliente no encontrado")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Client> getClientById(@PathVariable @Parameter(description = "ID del cliente a buscar") String id) {
+    public ResponseEntity<Client> getClientById(@PathVariable @Parameter(description = "ID del cliente a buscar") int id) {
         Client client = this.iClientService.getClientById(id);
         if (client == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -76,7 +76,7 @@ public class ClientController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<Client> updateClient(
-            @PathVariable @Parameter(description = "ID del cliente a actualizar") String id,
+            @PathVariable @Parameter(description = "ID del cliente a actualizar") int id,
             @RequestBody @Parameter(description = "Datos actualizados del cliente") Client newClient) {
         if (newClient == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -91,7 +91,7 @@ public class ClientController {
             @ApiResponse(responseCode = "204", description = "Cliente no encontrado")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Client> deleteClient(@PathVariable @Parameter(description = "ID del cliente a eliminar") String id) {
+    public ResponseEntity<Client> deleteClient(@PathVariable @Parameter(description = "ID del cliente a eliminar") int id) {
         Client client = this.iClientService.deleteClient(id);
         if (client == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

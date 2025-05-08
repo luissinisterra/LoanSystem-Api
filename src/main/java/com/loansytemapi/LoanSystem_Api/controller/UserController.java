@@ -49,7 +49,7 @@ public class UserController {
     })
     public ResponseEntity<Void> removeUser(
             @PathVariable
-            @Parameter(description = "ID del usuario a eliminar") String id
+            @Parameter(description = "ID del usuario a eliminar") int id
     ) throws NotFoundException {
         userService.removeUser(id);
         return ResponseEntity.ok().build();
@@ -63,7 +63,7 @@ public class UserController {
     })
     public ResponseEntity<User> updateUser(
             @PathVariable
-            @Parameter(description = "ID del usuario que se actualizará") String id,
+            @Parameter(description = "ID del usuario que se actualizará") int id,
             @RequestBody
             @Parameter(description = "Usuario con datos actualizados") User user
     ) throws NotFoundException {

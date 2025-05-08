@@ -1,19 +1,40 @@
 package com.loansytemapi.LoanSystem_Api.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 import java.util.UUID;
 
 public class User {
 
-    private String id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @Column(name = "names", nullable = false)
     private String names;
+
+    @Column(name = "surnames", nullable = false)
     private String surnames;
+
+    @Column(name = "email", nullable = false)
     private String email;
+
+    @Column(name = "password", nullable = false)
     private String password;
+
+    @Column(name = "username", nullable = false)
     private String username;
+
+    @Column(name = "gender", nullable = false)
     private String gender;
 
-    public User(String names, String surnames, String email, String password, String username, String gender) {
-        this.id = UUID.randomUUID().toString();
+    public User() {}
+
+    public User(int id, String names, String surnames, String email, String password, String username, String gender) {
+        this.id = id;
         this.names = names;
         this.surnames = surnames;
         this.email = email;
@@ -22,11 +43,11 @@ public class User {
         this.gender = gender;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

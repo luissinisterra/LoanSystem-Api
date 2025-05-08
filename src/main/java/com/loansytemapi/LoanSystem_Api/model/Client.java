@@ -1,14 +1,26 @@
 package com.loansytemapi.LoanSystem_Api.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "clients")
 public class Client extends Person {
+
+    @Column(name = "active", nullable = false)
     private boolean active;
+
+    @Column(name = "user_id", nullable = false)
     private List<Loan> loans;
 
-    public Client(String id, String firstName, String secondName, String firstSurname, String secondSurname, int age, String email, String phone, Address address) {
-        super(id, firstName, secondName, firstSurname, secondSurname, age, email, phone, address);
+    public Client() {}
+
+    public Client(int id, String firstName, String secondName, String firstSurname, String secondSurname, int age, String email, String phone, int addressId) {
+        super(id, firstName, secondName, firstSurname, secondSurname, age, email, phone, addressId);
         this.active = true;
         this.loans = new ArrayList<>();
     }

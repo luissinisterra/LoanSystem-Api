@@ -1,45 +1,59 @@
 package com.loansytemapi.LoanSystem_Api.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 import java.time.LocalDate;
 import java.util.UUID;
 
 public class Loan {
-    private String id;
-    private Client client;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @Column(name = "amount", nullable = false)
     private double amount;
+
+    @Column(name = "interest_rate", nullable = false)
     private double interestRate;
+
+    @Column(name = "term", nullable = false)
     private double term;
+
+    @Column(name = "active", nullable = false)
     private boolean active;
+
+    @Column(name = "date", nullable = false)
     private LocalDate date;
 
-    public Loan(){
-        this.id = UUID.randomUUID().toString();
-    }
+    @Column(name = "client_id", nullable = false)
+    private int clientId;
 
-    public Loan(Client client, double amount, double interestRate, double term, LocalDate date) {
-        this.id = UUID.randomUUID().toString();
-        this.client = client;
+    @Column(name = "user_id", nullable = false)
+    private int userId;
+
+    public Loan() {}
+
+    public Loan(int id, double amount, double interestRate, double term, boolean active, LocalDate date, int userId, int clientId) {
+        this.id = id;
         this.amount = amount;
         this.interestRate = interestRate;
         this.term = term;
-        this.active = true;
+        this.active = active;
         this.date = date;
+        this.userId = userId;
+        this.clientId = clientId;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
     }
 
     public double getAmount() {
@@ -80,5 +94,21 @@ public class Loan {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public int getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(int clientId) {
+        this.clientId = clientId;
     }
 }
