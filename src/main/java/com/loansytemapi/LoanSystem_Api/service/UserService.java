@@ -3,7 +3,7 @@ package com.loansytemapi.LoanSystem_Api.service;
 import com.loansytemapi.LoanSystem_Api.exception.InvalidUsernameException;
 import com.loansytemapi.LoanSystem_Api.exception.NotFoundException;
 import com.loansytemapi.LoanSystem_Api.model.User;
-import com.loansytemapi.LoanSystem_Api.repository.imp.IUserRepository;
+import com.loansytemapi.LoanSystem_Api.repository.IUserRepository;
 import com.loansytemapi.LoanSystem_Api.service.imp.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,8 +31,7 @@ public class UserService implements IUserService {
 
     @Override
     public void removeUser(int id) throws NotFoundException {
-        Optional<User> userOpt = userRepository.findById(id);
-        if (userOpt.isEmpty()) {
+        if (!userRepository.existsById(id)) {
             throw new NotFoundException("Usuario no encontrado");
         }
         userRepository.deleteById(id);
@@ -40,8 +39,7 @@ public class UserService implements IUserService {
 
     @Override
     public User updateUser(User user) throws NotFoundException {
-        Optional<User> userOpt = userRepository.findById(user.getId());
-        if (userOpt.isEmpty()) {
+        if (!userRepository.existsById(user.getId())) {
             throw new NotFoundException("Usuario no encontrado");
         }
         return userRepository.save(user);
