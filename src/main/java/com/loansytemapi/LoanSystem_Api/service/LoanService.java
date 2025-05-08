@@ -24,7 +24,7 @@ public class LoanService implements ILoanService {
     }
 
     @Override
-    public Loan getLoanById(String id) {
+    public Loan getLoanById(int id) {
         return iLoanRepository.findById(id).orElse(null);
     }
 
@@ -34,7 +34,7 @@ public class LoanService implements ILoanService {
     }
 
     @Override
-    public Loan deleteLoan(String id) {
+    public Loan deleteLoan(int id) {
         Loan loan = getLoanById(id);
         if (loan != null) {
             iLoanRepository.deleteById(id);
@@ -43,7 +43,7 @@ public class LoanService implements ILoanService {
     }
 
     @Override
-    public Loan updateLoan(String id, Loan updatedLoan) {
+    public Loan updateLoan(int id, Loan updatedLoan) {
         updatedLoan.setId(id);
         return iLoanRepository.save(updatedLoan);
     }
