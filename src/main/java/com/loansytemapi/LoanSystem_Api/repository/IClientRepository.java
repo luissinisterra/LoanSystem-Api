@@ -1,4 +1,4 @@
-package com.loansytemapi.LoanSystem_Api.repository.imp;
+package com.loansytemapi.LoanSystem_Api.repository;
 
 import com.loansytemapi.LoanSystem_Api.model.Client;
 import org.springframework.data.jpa.repository.JpaRepository;
