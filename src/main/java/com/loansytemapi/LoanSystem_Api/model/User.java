@@ -1,10 +1,9 @@
 package com.loansytemapi.LoanSystem_Api.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,13 +15,13 @@ public class User {
     @Column(name = "surnames", nullable = false)
     private String surnames;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "username", nullable = false)
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
 
     @Column(name = "gender", nullable = false)
@@ -30,8 +29,8 @@ public class User {
 
     public User() {}
 
-    public User(int id, String names, String surnames, String email, String password, String username, String gender) {
-        this.id = id;
+    // Constructor sin ID (porque se genera automáticamente)
+    public User(String names, String surnames, String email, String password, String username, String gender) {
         this.names = names;
         this.surnames = surnames;
         this.email = email;
@@ -42,10 +41,6 @@ public class User {
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getNames() {
