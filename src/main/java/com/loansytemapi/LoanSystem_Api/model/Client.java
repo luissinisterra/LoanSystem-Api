@@ -1,20 +1,21 @@
 package com.loansytemapi.LoanSystem_Api.model;
 
+import com.loansytemapi.LoanSystem_Api.controller.LoanController;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "clients")
 public class Client extends Person {
 
     @Column(name = "active", nullable = false)
     private boolean active;
 
-    @Column(name = "user_id", nullable = false)
     private List<Loan> loans;
 
     public Client() {}
