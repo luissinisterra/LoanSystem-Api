@@ -1,11 +1,12 @@
 package com.loansytemapi.LoanSystem_Api.service;
 
 import com.loansytemapi.LoanSystem_Api.model.Loan;
-import com.loansytemapi.LoanSystem_Api.repository.imp.ILoanRepository;
+import com.loansytemapi.LoanSystem_Api.repository.ILoanRepository;
 import com.loansytemapi.LoanSystem_Api.service.imp.ILoanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -44,12 +45,13 @@ public class LoanService implements ILoanService {
 
     @Override
     public Loan updateLoan(int id, Loan updatedLoan) {
-        updatedLoan.setId(id);
+        //updatedLoan.setId(id);
         return iLoanRepository.save(updatedLoan);
     }
 
     @Override
     public List<Loan> searchLoansByQuery(String query) {
-        return iLoanRepository.searchLoansByQuery(query);
+        //return iLoanRepository.searchLoansByQuery(query);
+        return new ArrayList<>();
     }
 }

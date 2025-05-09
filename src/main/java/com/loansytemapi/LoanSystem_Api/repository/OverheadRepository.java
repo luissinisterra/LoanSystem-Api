@@ -8,5 +8,4 @@ import java.util.List;
 
 @Repository
 public interface OverheadRepository extends JpaRepository<Overhead, Integer> {
-   List<Overhead> findByUserId(Integer userId);
 }

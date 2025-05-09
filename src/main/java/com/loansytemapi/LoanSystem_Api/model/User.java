@@ -29,7 +29,6 @@ public class User {
 
     public User() {}
 
-    // Constructor sin ID (porque se genera automáticamente)
     public User(String names, String surnames, String email, String password, String username, String gender) {
         this.names = names;
         this.surnames = surnames;
