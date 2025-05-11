@@ -1,6 +1,7 @@
 package com.loansytemapi.LoanSystem_Api.model;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "clients")
@@ -42,6 +43,9 @@ public class Client {
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
+    @OneToMany(mappedBy = "client", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Loan> loans;
+
     public Client() {}
 
     public Client(String firstName, String secondName, String firstSurname, String secondSurname,
@@ -60,6 +64,10 @@ public class Client {
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -140,5 +148,13 @@ public class Client {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public List<Loan> getLoans() {
+        return loans;
+    }
+
+    public void setLoans(List<Loan> loans) {
+        this.loans = loans;
     }
 }

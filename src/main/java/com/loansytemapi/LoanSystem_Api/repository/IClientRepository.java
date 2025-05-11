@@ -10,9 +10,9 @@ import java.util.List;
 
 @Repository
 public interface IClientRepository extends JpaRepository<Client, Integer> {
-    /*@Query("SELECT c FROM Client c WHERE " +
+    @Query("SELECT c FROM Client c WHERE " +
             "LOWER(c.firstName) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
             "LOWER(c.firstSurname) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
             "LOWER(c.email) LIKE LOWER(CONCAT('%', :query, '%'))")
-    List<Client> searchClientsByQuery(@Param("query") String query);*/
+    List<Client> findClientsByCriteria(@Param("query") String query);
 }

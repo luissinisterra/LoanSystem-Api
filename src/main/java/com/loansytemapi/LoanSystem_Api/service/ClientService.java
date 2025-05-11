@@ -1,13 +1,13 @@
 package com.loansytemapi.LoanSystem_Api.service;
 
 import com.loansytemapi.LoanSystem_Api.exception.IncompleteDataException;
+import com.loansytemapi.LoanSystem_Api.exception.NotFoundException;
 import com.loansytemapi.LoanSystem_Api.model.Client;
 import com.loansytemapi.LoanSystem_Api.repository.IClientRepository;
 import com.loansytemapi.LoanSystem_Api.service.imp.IClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -26,34 +26,87 @@ public class ClientService implements IClientService {
     }
 
     @Override
-    public Client getClientById(int id) {
-        return iClientRepository.findById(id).orElse(null);
+    public Client getClientById(int id) throws NotFoundException {
+        return iClientRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Cliente no encontrado con ID: " + id));
     }
 
     @Override
     public Client createClient(Client client) throws IncompleteDataException {
+        // Validar campos obligatorios
+        if (client.getFirstName() == null || client.getFirstName().trim().isEmpty()) {
+            throw new IncompleteDataException("El primer nombre es obligatorio.");
+        }
+        if (client.getFirstSurname() == null || client.getFirstSurname().trim().isEmpty()) {
+            throw new IncompleteDataException("El primer apellido es obligatorio.");
+        }
+        if (client.getEmail() == null || client.getEmail().trim().isEmpty()) {
+            throw new IncompleteDataException("El correo electrónico es obligatorio.");
+        }
+        if (client.getPhone() == null || client.getPhone().trim().isEmpty()) {
+            throw new IncompleteDataException("El teléfono es obligatorio.");
+        }
+        if (client.getAddress() == null) {
+            throw new IncompleteDataException("La dirección es obligatoria.");
+        }
+        if (client.getUser() == null) {
+            throw new IncompleteDataException("El usuario asociado es obligatorio.");
+        }
+
         return iClientRepository.save(client);
     }
 
     @Override
-    public Client deleteClient(int id) {
-        Client client = getClientById(id);
-        if (client != null) {
-            iClientRepository.deleteById(id);
+    public Client updateClient(int id, Client updatedClient) throws IncompleteDataException, NotFoundException {
+        Client existingClient = getClientById(id);
+
+        // Actualizar solo campos permitidos
+        existingClient.setFirstName(updatedClient.getFirstName());
+        existingClient.setSecondName(updatedClient.getSecondName());
+        existingClient.setFirstSurname(updatedClient.getFirstSurname());
+        existingClient.setSecondSurname(updatedClient.getSecondSurname());
+        existingClient.setAge(updatedClient.getAge());
+        existingClient.setEmail(updatedClient.getEmail());
+        existingClient.setPhone(updatedClient.getPhone());
+        existingClient.setActive(updatedClient.isActive());
+        existingClient.setAddress(updatedClient.getAddress());
+        existingClient.setUser(updatedClient.getUser());
+
+        // Validar datos actualizados
+        if (existingClient.getFirstName() == null || existingClient.getFirstName().trim().isEmpty()) {
+            throw new IncompleteDataException("El primer nombre es obligatorio.");
         }
+        if (existingClient.getFirstSurname() == null || existingClient.getFirstSurname().trim().isEmpty()) {
+            throw new IncompleteDataException("El primer apellido es obligatorio.");
+        }
+        if (existingClient.getEmail() == null || existingClient.getEmail().trim().isEmpty()) {
+            throw new IncompleteDataException("El correo electrónico es obligatorio.");
+        }
+        if (existingClient.getPhone() == null || existingClient.getPhone().trim().isEmpty()) {
+            throw new IncompleteDataException("El teléfono es obligatorio.");
+        }
+        if (existingClient.getAddress() == null) {
+            throw new IncompleteDataException("La dirección es obligatoria.");
+        }
+        if (existingClient.getUser() == null) {
+            throw new IncompleteDataException("El usuario asociado es obligatorio.");
+        }
+
+        return iClientRepository.save(existingClient);
+    }
+
+    @Override
+    public Client deleteClient(int id) throws NotFoundException {
+        Client client = getClientById(id);
+        iClientRepository.deleteById(id);
         return client;
     }
 
     @Override
-    public Client updateClient(int id, Client updatedClient) {
-        //updatedClient.setId(id);
-        return iClientRepository.save(updatedClient);
-    }
-
-    @Override
     public List<Client> searchClientsByQuery(String query) {
-        //return iClientRepository.searchClientsByQuery(query);
-        return new ArrayList<>();
+        if (query == null || query.trim().isEmpty()) {
+            return iClientRepository.findAll();
+        }
+        return iClientRepository.findClientsByCriteria(query);
     }
-
 }

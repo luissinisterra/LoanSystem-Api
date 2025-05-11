@@ -6,6 +6,7 @@ import com.loansytemapi.LoanSystem_Api.model.User;
 import com.loansytemapi.LoanSystem_Api.repository.IUserRepository;
 import com.loansytemapi.LoanSystem_Api.service.imp.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,10 +16,12 @@ import java.util.Optional;
 public class UserService implements IUserService {
 
     private final IUserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(IUserRepository userRepository) {
+    public UserService(IUserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -26,6 +29,10 @@ public class UserService implements IUserService {
         if (user.getUsername() == null || user.getUsername().isEmpty() || user.getUsername().length() > 20) {
             throw new InvalidUsernameException("El nombre de usuario no puede estar vacío o tener más de 20 caracteres");
         }
+
+        // Encriptar contraseña antes de guardar
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
         return userRepository.save(user);
     }
 
@@ -42,6 +49,12 @@ public class UserService implements IUserService {
         if (!userRepository.existsById(user.getId())) {
             throw new NotFoundException("Usuario no encontrado");
         }
+
+        // Si se actualiza la contraseña, encriptarla
+        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+
         return userRepository.save(user);
     }
 
@@ -52,7 +65,18 @@ public class UserService implements IUserService {
 
     @Override
     public User loadUser(String username, String password) throws NotFoundException {
-        Optional<User> userOpt = userRepository.loadUser(username, password);
-        return userOpt.orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
+        Optional<User> userOpt = userRepository.findByUsername(username);
+
+        if (userOpt.isEmpty()) {
+            throw new NotFoundException("Usuario no encontrado");
+        }
+
+        User user = userOpt.get();
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new NotFoundException("Contraseña incorrecta");
+        }
+
+        return user;
     }
 }
