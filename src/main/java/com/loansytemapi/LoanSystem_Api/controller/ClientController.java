@@ -1,7 +1,8 @@
 package com.loansytemapi.LoanSystem_Api.controller;
 
 import com.loansytemapi.LoanSystem_Api.exception.IncompleteDataException;
-import com.loansytemapi.LoanSystem_Api.model.Client;
+import com.loansytemapi.LoanSystem_Api.exception.NotFoundException;
+    import com.loansytemapi.LoanSystem_Api.model.Client;
 import com.loansytemapi.LoanSystem_Api.service.imp.IClientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -44,26 +45,27 @@ public class ClientController {
     @Operation(summary = "Obtener cliente por ID", description = "Busca un cliente específico por su ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Cliente encontrado"),
-            @ApiResponse(responseCode = "204", description = "Cliente no encontrado")
+            @ApiResponse(responseCode = "404", description = "Cliente no encontrado")
     })
     @GetMapping("/{id}")
     public ResponseEntity<Client> getClientById(@PathVariable @Parameter(description = "ID del cliente a buscar") int id) {
-        Client client = this.iClientService.getClientById(id);
-        if (client == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        try {
+            Client client = this.iClientService.getClientById(id);
+            return new ResponseEntity<>(client, HttpStatus.OK);
+        } catch (NotFoundException ex) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(client, HttpStatus.OK);
     }
 
     @Operation(summary = "Crear un nuevo cliente", description = "Registra un nuevo cliente en el sistema")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Cliente creado correctamente"),
-            @ApiResponse(responseCode = "204", description = "El cuerpo de la solicitud está vacío")
+            @ApiResponse(responseCode = "400", description = "Datos incompletos o inválidos")
     })
     @PostMapping
     public ResponseEntity<Client> createClient(@RequestBody @Parameter(description = "Datos del cliente a crear") Client newClient) throws IncompleteDataException {
         if (newClient == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Client client = this.iClientService.createClient(newClient);
         return new ResponseEntity<>(client, HttpStatus.CREATED);
@@ -72,31 +74,36 @@ public class ClientController {
     @Operation(summary = "Actualizar cliente", description = "Actualiza los datos de un cliente existente")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Cliente actualizado correctamente"),
-            @ApiResponse(responseCode = "204", description = "El cuerpo de la solicitud está vacío")
+            @ApiResponse(responseCode = "400", description = "Datos incompletos o inválidos"),
+            @ApiResponse(responseCode = "404", description = "Cliente no encontrado")
     })
     @PutMapping("/{id}")
     public ResponseEntity<Client> updateClient(
             @PathVariable @Parameter(description = "ID del cliente a actualizar") int id,
-            @RequestBody @Parameter(description = "Datos actualizados del cliente") Client newClient) {
+            @RequestBody @Parameter(description = "Datos actualizados del cliente") Client newClient)
+            throws IncompleteDataException, NotFoundException {
+
         if (newClient == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Client client = this.iClientService.updateClient(id, newClient);
-        return new ResponseEntity<>(client, HttpStatus.OK);
+
+        Client updatedClient = this.iClientService.updateClient(id, newClient);
+        return new ResponseEntity<>(updatedClient, HttpStatus.OK);
     }
 
     @Operation(summary = "Eliminar cliente", description = "Elimina un cliente registrado en el sistema")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Cliente eliminado correctamente"),
-            @ApiResponse(responseCode = "204", description = "Cliente no encontrado")
+            @ApiResponse(responseCode = "404", description = "Cliente no encontrado")
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Client> deleteClient(@PathVariable @Parameter(description = "ID del cliente a eliminar") int id) {
-        Client client = this.iClientService.deleteClient(id);
-        if (client == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        try {
+            Client client = this.iClientService.deleteClient(id);
+            return new ResponseEntity<>(client, HttpStatus.OK);
+        } catch (NotFoundException ex) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(client, HttpStatus.OK);
     }
 
     @Operation(summary = "Buscar clientes", description = "Filtra los clientes en base a una consulta de búsqueda")

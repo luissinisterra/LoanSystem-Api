@@ -68,7 +68,7 @@ public class IncomeService implements IIncomeService {
 
     @Override
     public List<Income> getByUserId(Integer userId) throws NotFoundException {
-        List<Income> incomes = incomeRepository.findByUserId(userId);
+        List<Income> incomes = incomeRepository.findAll();
         if (incomes == null){
             throw new NotFoundException("Incomes not found");
         }

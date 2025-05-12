@@ -4,6 +4,7 @@ import com.loansytemapi.LoanSystem_Api.exception.InvalidUsernameException;
 import com.loansytemapi.LoanSystem_Api.exception.NotFoundException;
 import com.loansytemapi.LoanSystem_Api.model.User;
 import com.loansytemapi.LoanSystem_Api.service.UserService;
+import com.loansytemapi.LoanSystem_Api.dto.LoginRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -80,14 +81,14 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/load/{username}/{password}")
-    @Operation(summary = "Obtener el usuario logeado")
-    @ApiResponse(responseCode = "200", description = "Usuario obtenido exitosamente")
-    public ResponseEntity<User> loadUser(
-            @PathVariable(required = true) String username,
-            @PathVariable(required = true) String password) throws NotFoundException {
-
-        User user = userService.loadUser(username, password);
+    @PostMapping("/login")
+    @Operation(summary = "Autenticar usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Inicio de sesión exitoso"),
+            @ApiResponse(responseCode = "401", description = "Credenciales inválidas")
+    })
+    public ResponseEntity<User> loginUser(@RequestBody LoginRequest loginRequest) throws NotFoundException {
+        User user = userService.loadUser(loginRequest.getUsername(), loginRequest.getPassword());
         return ResponseEntity.ok(user);
     }
 }

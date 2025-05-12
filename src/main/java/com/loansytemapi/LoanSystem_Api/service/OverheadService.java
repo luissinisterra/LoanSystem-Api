@@ -68,7 +68,7 @@ public class OverheadService implements IOverheadService {
 
     @Override
     public List<Overhead> getByUserId(Integer userId) throws NotFoundException {
-        List<Overhead> overheads = overheadRepository.findByUserId(userId);
+        List<Overhead> overheads = overheadRepository.findAll();
         if (overheads.isEmpty() || overheads == null){
             throw new NotFoundException("Not overheads found.");
         }

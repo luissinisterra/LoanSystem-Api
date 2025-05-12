@@ -1,13 +1,10 @@
 package com.loansytemapi.LoanSystem_Api.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-
+import jakarta.persistence.*;
 import java.time.LocalDate;
-import java.util.UUID;
 
+@Entity
+@Table(name = "loans")
 public class Loan {
 
     @Id
@@ -29,23 +26,24 @@ public class Loan {
     @Column(name = "date", nullable = false)
     private LocalDate date;
 
-    @Column(name = "client_id", nullable = false)
-    private int clientId;
+    @ManyToOne
+    @JoinColumn(name = "client_id", referencedColumnName = "id", nullable = false)
+    private Client client;
 
-    @Column(name = "user_id", nullable = false)
-    private int userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    private User user;
 
     public Loan() {}
 
-    public Loan(int id, double amount, double interestRate, double term, boolean active, LocalDate date, int userId, int clientId) {
-        this.id = id;
+    public Loan(double amount, double interestRate, double term, boolean active, LocalDate date, Client client, User user) {
         this.amount = amount;
         this.interestRate = interestRate;
         this.term = term;
         this.active = active;
         this.date = date;
-        this.userId = userId;
-        this.clientId = clientId;
+        this.client = client;
+        this.user = user;
     }
 
     public int getId() {
@@ -96,19 +94,19 @@ public class Loan {
         this.date = date;
     }
 
-    public int getUserId() {
-        return userId;
+    public Client getClient() {
+        return client;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setClient(Client client) {
+        this.client = client;
     }
 
-    public int getClientId() {
-        return clientId;
+    public User getUser() {
+        return user;
     }
 
-    public void setClientId(int clientId) {
-        this.clientId = clientId;
+    public void setUser(User user) {
+        this.user = user;
     }
 }

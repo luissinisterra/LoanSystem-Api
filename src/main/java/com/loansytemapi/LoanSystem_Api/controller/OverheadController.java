@@ -107,11 +107,11 @@ public class OverheadController {
             @ApiResponse(responseCode = "200", description = "Overhead retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "Overhead not found with the given ID")
     })
-    @GetMapping("/{id}")
+    @GetMapping("/users/{id}")
     public ResponseEntity<Overhead> getOverheadByUserId(
-            @PathVariable @Parameter(description = "ID of the overhead to retrieve") Integer id)
+            @PathVariable @Parameter(description = "ID of the overhead to retrieve") Integer user_id)
             throws NotFoundException {
-        Overhead found = overheadService.getByid(id);
+        Overhead found = overheadService.getByid(user_id);
         return new ResponseEntity<>(found, HttpStatus.OK);
     }
 
