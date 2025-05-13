@@ -1,5 +1,6 @@
 package com.loansytemapi.LoanSystem_Api.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -28,9 +29,11 @@ public class User {
     @Column(name = "gender", nullable = false)
     private String gender;
 
+    @JsonManagedReference("user-loans")
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Loan> loans;
 
+    @JsonManagedReference("user-clients")
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Client> clients;
 

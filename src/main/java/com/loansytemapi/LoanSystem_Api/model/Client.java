@@ -1,5 +1,7 @@
 package com.loansytemapi.LoanSystem_Api.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -39,10 +41,12 @@ public class Client {
     @JoinColumn(name = "address_id", referencedColumnName = "id", nullable = false)
     private Address address;
 
+    @JsonBackReference("user-clients")
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
+    @JsonManagedReference("client-loans")
     @OneToMany(mappedBy = "client", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Loan> loans;
 

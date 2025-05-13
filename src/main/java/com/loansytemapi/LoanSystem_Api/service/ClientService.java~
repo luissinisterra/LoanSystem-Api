@@ -88,9 +88,9 @@ public class ClientService implements IClientService {
         if (existingClient.getAddress() == null) {
             throw new IncompleteDataException("La dirección es obligatoria.");
         }
-        /*if (existingClient.getUser() == null) {
+        if (existingClient.getUser() == null) {
             throw new IncompleteDataException("El usuario asociado es obligatorio.");
-        }*/
+        }
 
         return iClientRepository.save(existingClient);
     }

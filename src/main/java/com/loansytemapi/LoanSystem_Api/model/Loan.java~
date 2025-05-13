@@ -32,7 +32,7 @@ public class Loan {
     @JoinColumn(name = "client_id", referencedColumnName = "id", nullable = false)
     private Client client;
 
-    @JsonBackReference("user-loans")
+    @JsonBackReference()
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
