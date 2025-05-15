@@ -57,7 +57,7 @@ public class IncomeController {
     })
     @GetMapping("/userIncomes/{userId}")
     public ResponseEntity<List<Income>> getIncomesByUserId(
-            @PathVariable @Parameter(description = "User ID to retrieve incomes for") Integer userId) throws NotFoundException {
+            @PathVariable @Parameter(description = "User ID to retrieve incomes for") Integer userId) {
         return ResponseEntity.ok(incomeService.getByUserId(userId));
     }
 

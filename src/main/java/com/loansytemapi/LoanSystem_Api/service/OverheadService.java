@@ -34,21 +34,21 @@ public class OverheadService implements IOverheadService {
 
     @Override
     public void remove(Integer id) throws NotFoundException {
-        Overhead overhead = overheadRepository.findById(id).get();
-        if (overhead == null) {
+        Optional<Overhead> overhead = overheadRepository.findById(id);
+        if (overhead.isEmpty()) {
             throw new NotFoundException("The overhead with id " + id + " does not exist.");
         }
-        overheadRepository.delete(overhead);
+        overheadRepository.deleteById(id);
     }
 
     @Override
     public Overhead update(Overhead gasto) throws NotFoundException {
-        Overhead overhead = overheadRepository.findById(gasto.getId()).get();
-        if (overhead == null) {
+        Optional<Overhead> overhead = overheadRepository.findById(gasto.getId());
+        if (overhead.isEmpty()) {
             throw new NotFoundException("The overhead with id " + gasto.getId() + " does not exist.");
         }
-        gasto.setOverhead_date(overhead.getOverhead_date());
-        gasto.setId(overhead.getId());
+        gasto.setOverhead_date(overhead.get().getOverhead_date());
+        gasto.setId(overhead.get().getId());
         return overheadRepository.save(gasto);
     }
 
@@ -59,20 +59,16 @@ public class OverheadService implements IOverheadService {
 
     @Override
     public Overhead getByid(Integer id) throws NotFoundException {
-        Overhead overhead = overheadRepository.findById(id).get();
-        if (overhead == null) {
+        Optional<Overhead> overhead = overheadRepository.findById(id);
+        if (overhead.isEmpty()) {
             throw new NotFoundException("The overhead with id " + id + " does not exist.");
         }
-        return overhead;
+        return overhead.get();
     }
 
     @Override
-    public List<Overhead> getByUserId(Integer userId) throws NotFoundException {
-        List<Overhead> overheads = overheadRepository.findAll();
-        if (overheads.isEmpty() || overheads == null){
-            throw new NotFoundException("Not overheads found.");
-        }
-        return overheads;
+    public List<Overhead> getByUserId(Integer userId) {
+        return overheadRepository.findAllByUser_id(userId);
     }
 
     @Override
