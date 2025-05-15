@@ -18,7 +18,7 @@ public interface IIncomeService {
 
     Income updateIncome(Income income) throws NotFoundException;
 
-   List<Income> getByUserId(Integer userId) throws NotFoundException;
+   List<Income> getByUserId(Integer userId);
 
     List<Income> getByFilter(String incomeType, Integer min, Integer max, Integer exactAmount, String dateFilter);
 }

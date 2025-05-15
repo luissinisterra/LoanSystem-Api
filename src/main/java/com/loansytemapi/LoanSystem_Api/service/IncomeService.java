@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.loansytemapi.LoanSystem_Api.service.imp.IIncomeService;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class IncomeService implements IIncomeService {
@@ -39,40 +40,36 @@ public class IncomeService implements IIncomeService {
 
     @Override
     public Income getIncomeById(Integer id) throws NotFoundException {
-        Income income = incomeRepository.findById(id).get();
-        if (income == null){
-            throw new NotFoundException ("Income not found");
+        Optional<Income> income = incomeRepository.findById(id);
+        if (income.isEmpty()){
+            throw new NotFoundException("Income not found");
         }
-        return income;
+        return income.get();
     }
 
     @Override
     public void deleteIncome(Integer id) throws NotFoundException {
-        Income income = incomeRepository.findById(id).get();
-        if (income == null){
+        Optional<Income> income = incomeRepository.findById(id);
+        if (income.isEmpty()){
             throw new NotFoundException("Income not found");
         }
-        incomeRepository.delete(income);
+        incomeRepository.deleteById(id);
     }
 
     @Override
     public Income updateIncome(Income income) throws NotFoundException {
-        Income i = incomeRepository.findById(income.getId()).get();
-        if (income == null){
+        Optional<Income> i = incomeRepository.findById(income.getId());
+        if (i.isEmpty()){
             throw new NotFoundException("Income not found");
         }
-        income.setId(i.getId());
-        income.setIncome_date(i.getIncome_date());
+        income.setId(i.get().getId());
+        income.setIncome_date(i.get().getIncome_date());
         return incomeRepository.save(income);
     }
 
     @Override
-    public List<Income> getByUserId(Integer userId) throws NotFoundException {
-        List<Income> incomes = incomeRepository.findAll();
-        if (incomes == null){
-            throw new NotFoundException("Incomes not found");
-        }
-        return incomes;
+    public List<Income> getByUserId(Integer userId) {
+        return incomeRepository.findAllByUser_id(userId);
     }
 
     @Override
