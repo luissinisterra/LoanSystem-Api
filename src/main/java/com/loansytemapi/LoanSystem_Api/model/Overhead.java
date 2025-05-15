@@ -9,9 +9,10 @@ public class Overhead {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    
-    @Column(name = "user_id", nullable = false)
-    private Integer user_id;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "id") // nombre columna FK en la tabla
+    private User user;
      
     @Column(name = "overhead_type", nullable = false)
     private String overhead_type;
@@ -36,12 +37,12 @@ public class Overhead {
         this.id = id;
     }
 
-    public Integer getUser_id() {
-        return user_id;
+    public User getUser() {
+        return user;
     }
 
-    public void setUser_id(Integer user_id) {
-        this.user_id = user_id;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getOverhead_type() {

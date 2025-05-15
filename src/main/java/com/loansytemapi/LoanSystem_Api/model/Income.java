@@ -8,9 +8,10 @@ public class Income {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    
-     @Column(name = "user_id", nullable = false)
-    private Integer user_id;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "id") // nombre columna FK en la tabla
+    private User user;
      
     @Column(name = "income_type", nullable = false)
     private String income_type;
@@ -38,12 +39,12 @@ public class Income {
         this.id = id;
     }
 
-    public Integer getUser_id() {
-        return user_id;
+    public User getUser() {
+        return user;
     }
 
-    public void setUser_id(Integer user_id) {
-        this.user_id = user_id;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getIncome_type() {
