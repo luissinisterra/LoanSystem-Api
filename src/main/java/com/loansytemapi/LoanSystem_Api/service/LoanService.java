@@ -1,24 +1,33 @@
 package com.loansytemapi.LoanSystem_Api.service;
 
+import com.loansytemapi.LoanSystem_Api.dto.LoanDTO;
 import com.loansytemapi.LoanSystem_Api.exception.IncompleteDataException;
 import com.loansytemapi.LoanSystem_Api.exception.NotFoundException;
+import com.loansytemapi.LoanSystem_Api.model.Client;
 import com.loansytemapi.LoanSystem_Api.model.Loan;
+import com.loansytemapi.LoanSystem_Api.model.User;
+import com.loansytemapi.LoanSystem_Api.repository.IClientRepository;
 import com.loansytemapi.LoanSystem_Api.repository.ILoanRepository;
+import com.loansytemapi.LoanSystem_Api.repository.IUserRepository;
+import com.loansytemapi.LoanSystem_Api.service.imp.IClientService;
 import com.loansytemapi.LoanSystem_Api.service.imp.ILoanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class LoanService implements ILoanService {
 
     private final ILoanRepository iLoanRepository;
+    private final IClientRepository iClientRepository;
+    private final IUserRepository iUserRepository;
 
     @Autowired
-    public LoanService(ILoanRepository iLoanRepository) {
+    public LoanService(ILoanRepository iLoanRepository, IClientRepository iClientRepository, IUserRepository iUserRepository) {
         this.iLoanRepository = iLoanRepository;
+        this.iClientRepository = iClientRepository;
+        this.iUserRepository = iUserRepository;
     }
 
     @Override
@@ -33,7 +42,25 @@ public class LoanService implements ILoanService {
     }
 
     @Override
-    public Loan createLoan(Loan loan) throws IncompleteDataException {
+    public Loan createLoan(LoanDTO newLoan) throws IncompleteDataException, NotFoundException {
+
+        // Asegúrate de que el cliente existe
+        Client client = this.iClientRepository.findById(newLoan.getClientId())
+                .orElseThrow(() -> new NotFoundException("Cliente no encontrado"));
+
+        // Igual con el usuario
+        User user = this.iUserRepository.findById(newLoan.getUserId())
+                .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
+
+        Loan loan = new Loan();
+        loan.setAmount(newLoan.getAmount());
+        loan.setInterestRate(newLoan.getInterestRate());
+        loan.setTerm(newLoan.getTerm());
+        loan.setActive(newLoan.isActive());
+        loan.setDate(newLoan.getDate());
+        loan.setClient(client);
+        loan.setUser(user);
+
         if (loan.getAmount() <= 0) {
             throw new IncompleteDataException("El monto debe ser mayor a cero.");
         }
@@ -46,12 +73,12 @@ public class LoanService implements ILoanService {
         if (loan.getDate() == null) {
             throw new IncompleteDataException("La fecha es obligatoria.");
         }
-        /*if (loan.getClient() == null) {
+        if (loan.getClient() == null) {
             throw new IncompleteDataException("El cliente es obligatorio.");
         }
         if (loan.getUser() == null) {
             throw new IncompleteDataException("El usuario es obligatorio.");
-        }*/
+        }
 
         return iLoanRepository.save(loan);
     }
