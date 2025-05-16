@@ -29,7 +29,6 @@ public class UserService implements IUserService {
         if (user.getUsername() == null || user.getUsername().isEmpty() || user.getUsername().length() > 20) {
             throw new InvalidUsernameException("El nombre de usuario no puede estar vacío o tener más de 20 caracteres");
         }
-
         // Encriptar contraseña antes de guardar
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
@@ -65,7 +64,7 @@ public class UserService implements IUserService {
 
     @Override
     public User loadUser(String username, String password) throws NotFoundException {
-        Optional<User> userOpt = userRepository.findByUsername(username);
+        Optional<User> userOpt = userRepository.findUserByUsername(username);
 
         if (userOpt.isEmpty()) {
             throw new NotFoundException("Usuario no encontrado");

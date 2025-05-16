@@ -1,41 +1,26 @@
-package com.loansytemapi.LoanSystem_Api.model;
+package com.loansytemapi.LoanSystem_Api.dto;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.*;
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "loans")
-public class Loan {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class LoanDTO {
     private int id;
-
-    @Column(name = "amount", nullable = false)
     private double amount;
-
-    @Column(name = "interest_rate", nullable = false)
     private double interestRate;
-
-    @Column(name = "term", nullable = false)
     private double term;
-
-    @Column(name = "active", nullable = false)
     private boolean active;
-
-    @Column(name = "date", nullable = false)
     private LocalDate date;
+    private int clientId;
+    private int userId;
 
-    @ManyToOne
-    @JoinColumn(name = "client_id", referencedColumnName = "id", nullable = false)
-    private Client client;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-    private User user;
-
-    public Loan() {}
+    public Loan(double amount, double interestRate, double term, boolean active, LocalDate date, int clientId, int userId) {
+        this.amount = amount;
+        this.interestRate = interestRate;
+        this.term = term;
+        this.active = active;
+        this.date = date;
+        this.clientId = clientId;
+        this.userId = userId;
+    }
 
     public int getId() {
         return id;
@@ -85,19 +70,20 @@ public class Loan {
         this.date = date;
     }
 
-    public Client getClient() {
-        return client;
+    public int getClientId() {
+        return clientId;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setClientId(int clientId) {
+        this.clientId = clientId;
     }
 
-    public User getUser() {
-        return user;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }
+

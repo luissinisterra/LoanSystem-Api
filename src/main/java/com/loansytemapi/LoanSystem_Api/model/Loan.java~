@@ -37,6 +37,16 @@ public class Loan {
 
     public Loan() {}
 
+    public Loan(double amount, double interestRate, double term, boolean active, LocalDate date, Client client, User user) {
+        this.amount = amount;
+        this.interestRate = interestRate;
+        this.term = term;
+        this.active = active;
+        this.date = date;
+        this.client = client;
+        this.user = user;
+    }
+
     public int getId() {
         return id;
     }

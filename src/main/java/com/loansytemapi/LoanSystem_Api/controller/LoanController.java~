@@ -82,7 +82,7 @@ public class LoanController {
     @PutMapping("/{id}")
     public ResponseEntity<Loan> updateLoan(
             @PathVariable @Parameter(description = "ID del préstamo a actualizar") int id,
-            @RequestBody @Parameter(description = "Datos actualizados del préstamo") LoanDTO updatedLoan)
+            @RequestBody @Parameter(description = "Datos actualizados del préstamo") Loan updatedLoan)
             throws IncompleteDataException, NotFoundException {
 
         if (updatedLoan == null) {
