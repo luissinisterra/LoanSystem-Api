@@ -12,5 +12,13 @@ public interface ILoanRepository extends JpaRepository<Loan, Integer> {
             "LOWER(l.client.firstName) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
             "LOWER(l.client.firstSurname) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
             "LOWER(l.client.email) LIKE LOWER(CONCAT('%', :query, '%'))")
+
+    /*@Query("SELECT l FROM Loan l WHERE " +
+            "CAST(l.id AS string) LIKE CONCAT('%', :query, '%') OR " +
+            "CAST(l.amount AS string) LIKE CONCAT('%', :query, '%') OR " +
+            "CAST(l.interestRate AS string) LIKE CONCAT('%', :query, '%') OR " +
+            "CAST(l.term AS string) LIKE CONCAT('%', :query, '%') OR " +
+            "CAST(l.active AS string) LIKE CONCAT('%', :query, '%') OR " +
+            "CAST(l.date AS string) LIKE CONCAT('%', :query, '%')")*/
     List<Loan> findLoansByCriteria(@Param("query") String query);
 }

@@ -9,7 +9,6 @@ import com.loansytemapi.LoanSystem_Api.model.User;
 import com.loansytemapi.LoanSystem_Api.repository.IClientRepository;
 import com.loansytemapi.LoanSystem_Api.repository.ILoanRepository;
 import com.loansytemapi.LoanSystem_Api.repository.IUserRepository;
-import com.loansytemapi.LoanSystem_Api.service.imp.IClientService;
 import com.loansytemapi.LoanSystem_Api.service.imp.ILoanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
