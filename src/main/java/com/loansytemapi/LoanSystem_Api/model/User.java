@@ -29,24 +29,7 @@ public class User {
     @Column(name = "gender", nullable = false)
     private String gender;
 
-    @JsonManagedReference("user-loans")
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Loan> loans;
-
-    @JsonManagedReference("user-clients")
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Client> clients;
-
     public User() {}
-
-    public User(String names, String surnames, String email, String password, String username, String gender) {
-        this.names = names;
-        this.surnames = surnames;
-        this.email = email;
-        this.password = password;
-        this.username = username;
-        this.gender = gender;
-    }
 
     public int getId() {
         return id;
@@ -102,21 +85,5 @@ public class User {
 
     public void setGender(String gender) {
         this.gender = gender;
-    }
-
-    public List<Loan> getLoans() {
-        return loans;
-    }
-
-    public void setLoans(List<Loan> loans) {
-        this.loans = loans;
-    }
-
-    public List<Client> getClients() {
-        return clients;
-    }
-
-    public void setClients(List<Client> clients) {
-        this.clients = clients;
     }
 }

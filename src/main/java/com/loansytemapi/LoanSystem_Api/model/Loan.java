@@ -27,27 +27,15 @@ public class Loan {
     @Column(name = "date", nullable = false)
     private LocalDate date;
 
-    @JsonBackReference("client-loans")
     @ManyToOne
     @JoinColumn(name = "client_id", referencedColumnName = "id", nullable = false)
     private Client client;
 
-    @JsonBackReference("user-loans")
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
     public Loan() {}
-
-    public Loan(double amount, double interestRate, double term, boolean active, LocalDate date, Client client, User user) {
-        this.amount = amount;
-        this.interestRate = interestRate;
-        this.term = term;
-        this.active = active;
-        this.date = date;
-        this.client = client;
-        this.user = user;
-    }
 
     public int getId() {
         return id;

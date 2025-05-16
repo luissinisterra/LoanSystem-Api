@@ -41,30 +41,11 @@ public class Client {
     @JoinColumn(name = "address_id", referencedColumnName = "id", nullable = false)
     private Address address;
 
-    @JsonBackReference("user-clients")
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
-    @JsonManagedReference("client-loans")
-    @OneToMany(mappedBy = "client", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Loan> loans;
-
     public Client() {}
-
-    public Client(String firstName, String secondName, String firstSurname, String secondSurname,
-                  int age, String email, String phone, Address address, User user, boolean active) {
-        this.firstName = firstName;
-        this.secondName = secondName;
-        this.firstSurname = firstSurname;
-        this.secondSurname = secondSurname;
-        this.age = age;
-        this.email = email;
-        this.phone = phone;
-        this.address = address;
-        this.user = user;
-        this.active = active;
-    }
 
     public int getId() {
         return id;
@@ -152,13 +133,5 @@ public class Client {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public List<Loan> getLoans() {
-        return loans;
-    }
-
-    public void setLoans(List<Loan> loans) {
-        this.loans = loans;
     }
 }
