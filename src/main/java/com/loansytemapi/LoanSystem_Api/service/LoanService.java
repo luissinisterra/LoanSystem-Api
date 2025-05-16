@@ -91,7 +91,7 @@ public class LoanService implements ILoanService {
     }
 
     @Override
-    public Loan updateLoan(int id, Loan updatedLoan) throws IncompleteDataException, NotFoundException {
+    public Loan updateLoan(int id, LoanDTO updatedLoan) throws IncompleteDataException, NotFoundException {
         Loan existingLoan = getLoanById(id);
 
         existingLoan.setAmount(updatedLoan.getAmount());
@@ -114,12 +114,12 @@ public class LoanService implements ILoanService {
         if (existingLoan.getDate() == null) {
             throw new IncompleteDataException("La fecha es obligatoria.");
         }
-        /*if (existingLoan.getClient() == null) {
+        if (existingLoan.getClient() == null) {
             throw new IncompleteDataException("El cliente es obligatorio.");
         }
         if (existingLoan.getUser() == null) {
             throw new IncompleteDataException("El usuario es obligatorio.");
-        }*/
+        }
 
         return iLoanRepository.save(existingLoan);
     }

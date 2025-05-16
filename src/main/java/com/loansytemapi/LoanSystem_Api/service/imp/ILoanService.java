@@ -11,6 +11,6 @@ public interface ILoanService {
     Loan getLoanById(int id) throws NotFoundException;
     Loan deleteLoan(int id) throws NotFoundException;
     Loan createLoan(LoanDTO loan) throws IncompleteDataException, NotFoundException;
-    Loan updateLoan(int id, Loan loan) throws IncompleteDataException, NotFoundException;
+    Loan updateLoan(int id, LoanDTO loan) throws IncompleteDataException, NotFoundException;
     List<Loan> searchLoansByQuery(String query);
 }
