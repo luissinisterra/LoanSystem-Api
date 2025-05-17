@@ -35,11 +35,6 @@ public class LoanService implements ILoanService {
     }
 
     @Override
-    public List<Loan> getAllLoansByUserId(int userId) {
-        return iLoanRepository.findAllByUser_Id(userId);
-    }
-
-    @Override
     public Loan getLoanById(int id) throws NotFoundException {
         return iLoanRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Préstamo no encontrado con ID: " + id));

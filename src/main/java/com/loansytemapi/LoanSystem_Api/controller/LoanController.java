@@ -43,6 +43,20 @@ public class LoanController {
         return new ResponseEntity<>(loans, HttpStatus.OK);
     }
 
+    @Operation(summary = "Obtener todos los préstamos de un usuario en especifico", description = "Retorna una lista con todos los préstamos registrados que tiene un usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de préstamos obtenida exitosamente"),
+            @ApiResponse(responseCode = "204", description = "No hay préstamos disponibles")
+    })
+    @GetMapping
+    public ResponseEntity<List<Loan>> getAllLoansByUserId(@PathVariable int userId) throws NotFoundException {
+        List<Loan> userLoans = this.iLoanService.getAllLoansByUserId(userId);
+        if (userLoans.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(userLoans, HttpStatus.OK);
+    }
+
     @Operation(summary = "Obtener préstamo por ID", description = "Retorna un préstamo específico mediante su ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Préstamo encontrado exitosamente"),

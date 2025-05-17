@@ -1,6 +1,7 @@
 package com.loansytemapi.LoanSystem_Api.repository;
 
 import com.loansytemapi.LoanSystem_Api.model.Loan;
+import com.loansytemapi.LoanSystem_Api.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,4 +22,8 @@ public interface ILoanRepository extends JpaRepository<Loan, Integer> {
             "CAST(l.active AS string) LIKE CONCAT('%', :query, '%') OR " +
             "CAST(l.date AS string) LIKE CONCAT('%', :query, '%')")*/
     List<Loan> findLoansByCriteria(@Param("query") String query);
+
+    List<Loan> findAllByUser_Id(int userId);
+
+    int user(User user);
 }
