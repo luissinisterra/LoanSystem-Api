@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LoanService implements ILoanService {
@@ -32,6 +33,11 @@ public class LoanService implements ILoanService {
     @Override
     public List<Loan> getAllLoans() {
         return iLoanRepository.findAll();
+    }
+
+    @Override
+    public List<Loan> getAllLoansByUserId(int userId) {
+        return iLoanRepository.findAllByUser_Id(userId);
     }
 
     @Override
@@ -132,10 +138,18 @@ public class LoanService implements ILoanService {
     }
 
     @Override
-    public List<Loan> searchLoansByQuery(String query) {
+    public List<Loan> searchLoansByQuery(int userId, String query) {
         if (query == null || query.trim().isEmpty()) {
             return iLoanRepository.findAll();
         }
-        return iLoanRepository.findLoansByCriteria(query);
+        //return iLoanRepository.findLoansByCriteria(query);
+        
+        return iLoanRepository.findAllByUser_Id(userId).stream().filter(loan ->
+                                String.valueOf(loan.getId()).toLowerCase().contains(query.toLowerCase()) ||
+                                String.valueOf(loan.getAmount()).toLowerCase().contains(query.toLowerCase()) ||
+                                String.valueOf(loan.getInterestRate()).toLowerCase().contains(query.toLowerCase()) ||
+                                String.valueOf(loan.getTerm()).toLowerCase().contains(query.toLowerCase()) ||
+                                String.valueOf(loan.isActive() ? "Activo" : "Pagado").toLowerCase().contains(query.toLowerCase()) ||
+                                String.valueOf(loan.getDate()).toLowerCase().contains(query.toLowerCase())).toList();
     }
 }

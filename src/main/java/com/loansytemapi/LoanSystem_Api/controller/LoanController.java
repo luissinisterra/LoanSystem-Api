@@ -48,7 +48,7 @@ public class LoanController {
             @ApiResponse(responseCode = "200", description = "Lista de préstamos obtenida exitosamente"),
             @ApiResponse(responseCode = "204", description = "No hay préstamos disponibles")
     })
-    @GetMapping
+    @GetMapping("/user/{userId}")
     public ResponseEntity<List<Loan>> getAllLoansByUserId(@PathVariable int userId) throws NotFoundException {
         List<Loan> userLoans = this.iLoanService.getAllLoansByUserId(userId);
         if (userLoans.isEmpty()) {
@@ -128,10 +128,10 @@ public class LoanController {
             @ApiResponse(responseCode = "200", description = "Préstamos encontrados con la búsqueda"),
             @ApiResponse(responseCode = "204", description = "No se encontraron préstamos con ese criterio")
     })
-    @GetMapping("/search")
-    public ResponseEntity<List<Loan>> searchLoans(
+    @GetMapping("/search/{userId}")
+    public ResponseEntity<List<Loan>> searchLoans(@PathVariable int userId,
             @RequestParam(required = false) @Parameter(description = "Texto de búsqueda para filtrar préstamos") String query) {
-        List<Loan> loans = this.iLoanService.searchLoansByQuery(query);
+        List<Loan> loans = this.iLoanService.searchLoansByQuery(userId, query);
         if (loans.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
