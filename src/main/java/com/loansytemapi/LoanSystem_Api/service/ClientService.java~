@@ -8,6 +8,7 @@ import com.loansytemapi.LoanSystem_Api.service.imp.IClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -88,9 +89,9 @@ public class ClientService implements IClientService {
         if (existingClient.getAddress() == null) {
             throw new IncompleteDataException("La dirección es obligatoria.");
         }
-        if (existingClient.getUser() == null) {
+        /*if (existingClient.getUser() == null) {
             throw new IncompleteDataException("El usuario asociado es obligatorio.");
-        }
+        }*/
 
         return iClientRepository.save(existingClient);
     }
@@ -107,6 +108,7 @@ public class ClientService implements IClientService {
         if (query == null || query.trim().isEmpty()) {
             return iClientRepository.findAll();
         }
-        return iClientRepository.findClientsByCriteria(query);
+        //return iClientRepository.findClientsByCriteria(query);
+        return new ArrayList<>();
     }
 }

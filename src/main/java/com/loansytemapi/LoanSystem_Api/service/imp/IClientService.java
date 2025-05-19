@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface IClientService {
     List<Client> getAllClients();
+    List<Client> getAllClientsByUserId(int userId) throws NotFoundException;
     Client getClientById(int id) throws NotFoundException;
     Client createClient(Client client) throws IncompleteDataException;
     Client updateClient(int id, Client client) throws IncompleteDataException, NotFoundException;
