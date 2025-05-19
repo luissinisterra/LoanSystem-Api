@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class LoanService implements ILoanService {
@@ -142,7 +141,6 @@ public class LoanService implements ILoanService {
         if (query == null || query.trim().isEmpty()) {
             return iLoanRepository.findAll();
         }
-        //return iLoanRepository.findLoansByCriteria(query);
 
         return iLoanRepository.findAllByUser_Id(userId).stream().filter(loan ->
                                 String.valueOf(loan.getId()).toLowerCase().contains(query.toLowerCase()) ||
