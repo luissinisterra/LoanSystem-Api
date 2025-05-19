@@ -1,6 +1,7 @@
 package com.loansytemapi.LoanSystem_Api.service;
 
-import com.loansytemapi.LoanSystem_Api.dto.IncomeDTO;
+import com.loansytemapi.LoanSystem_Api.dto.IncomeCreateDTO;
+import com.loansytemapi.LoanSystem_Api.dto.IncomeResponseDTO;
 import com.loansytemapi.LoanSystem_Api.exception.InvalidAmmountException;
 import com.loansytemapi.LoanSystem_Api.exception.InvalidTextLengthException;
 import com.loansytemapi.LoanSystem_Api.exception.NotFoundException;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.loansytemapi.LoanSystem_Api.service.imp.IIncomeService;
 import java.time.LocalDate;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +30,7 @@ public class IncomeService implements IIncomeService {
     }
 
     @Override
-    public Income saveIncome(IncomeDTO income) throws InvalidTextLengthException, InvalidAmmountException, NotFoundException {
+    public IncomeResponseDTO saveIncome(IncomeCreateDTO income) throws InvalidTextLengthException, InvalidAmmountException, NotFoundException {
         Optional<User> user = userRepository.findById(income.getUserId());
         if (user.isEmpty()){
             throw new NotFoundException("User not found");
@@ -44,21 +46,27 @@ public class IncomeService implements IIncomeService {
         if (income.getAmmount() <= 0){
             throw new InvalidAmmountException("The amount must be greater than zero.");
         }
-        return incomeRepository.save(newIncome);
+        return new IncomeResponseDTO(incomeRepository.save(newIncome));
     }
 
     @Override
-    public List<Income> getAllIncomes() {
-        return incomeRepository.findAll();
+    public List<IncomeResponseDTO> getAllIncomes() {
+        List<Income> all = incomeRepository.findAll();
+        List<IncomeResponseDTO> response = new LinkedList<>();
+        for (Income i : all) {
+            response.add(new IncomeResponseDTO(i));
+        }
+        return response;
     }
 
     @Override
-    public Income getIncomeById(Integer id) throws NotFoundException {
+    public IncomeResponseDTO getIncomeById(Integer id) throws NotFoundException {
         Optional<Income> income = incomeRepository.findById(id);
         if (income.isEmpty()){
             throw new NotFoundException("Income not found");
         }
-        return income.get();
+        Income i = income.get();
+        return new IncomeResponseDTO(i);
     }
 
     @Override
@@ -71,7 +79,7 @@ public class IncomeService implements IIncomeService {
     }
 
     @Override
-    public Income updateIncome(Integer id, IncomeDTO income) throws NotFoundException, InvalidTextLengthException, InvalidAmmountException {
+    public IncomeResponseDTO updateIncome(Integer id, IncomeCreateDTO income) throws NotFoundException, InvalidTextLengthException, InvalidAmmountException {
         Optional<Income> i = incomeRepository.findById(id);
         if (i.isEmpty()){
             throw new NotFoundException("Income not found");
@@ -85,12 +93,18 @@ public class IncomeService implements IIncomeService {
         if (income.getAmmount() <= 0){
             throw new InvalidAmmountException("The amount must be greater than zero.");
         }
-        return incomeRepository.save(i.get());
+        Income updatedIncome = incomeRepository.save(i.get());
+        return new IncomeResponseDTO(updatedIncome);
     }
 
     @Override
-    public List<Income> getByUserId(Integer userId) {
-        return incomeRepository.findAllByUser_id(userId);
+    public List<IncomeResponseDTO> getByUserId(Integer userId) {
+        List<Income> all = incomeRepository.findAllByUser_id(userId);
+        List<IncomeResponseDTO> response = new LinkedList<>();
+        for (Income i : all) {
+            response.add(new IncomeResponseDTO(i));
+        }
+        return response;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.loansytemapi.LoanSystem_Api.controller;
 
-import com.loansytemapi.LoanSystem_Api.dto.IncomeDTO;
+import com.loansytemapi.LoanSystem_Api.dto.IncomeCreateDTO;
+import com.loansytemapi.LoanSystem_Api.dto.IncomeResponseDTO;
 import com.loansytemapi.LoanSystem_Api.exception.InvalidAmmountException;
 import com.loansytemapi.LoanSystem_Api.exception.InvalidTextLengthException;
 import com.loansytemapi.LoanSystem_Api.exception.NotFoundException;
@@ -34,7 +35,7 @@ public class IncomeController {
             @ApiResponse(responseCode = "200", description = "Income list retrieved successfully")
     })
     @GetMapping
-    public ResponseEntity<List<Income>> getAll() {
+    public ResponseEntity<List<IncomeResponseDTO>> getAll() {
         return ResponseEntity.ok(incomeService.getAllIncomes());
     }
 
@@ -44,7 +45,7 @@ public class IncomeController {
             @ApiResponse(responseCode = "404", description = "Income not found")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Income> getById(@PathVariable @Parameter(description = "ID of the income to retrieve") Integer id) throws NotFoundException {
+    public ResponseEntity<IncomeResponseDTO> getById(@PathVariable @Parameter(description = "ID of the income to retrieve") Integer id) throws NotFoundException {
         return ResponseEntity.ok(incomeService.getIncomeById(id));
     }
 
@@ -56,8 +57,8 @@ public class IncomeController {
             @ApiResponse(responseCode = "200", description = "Incomes retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "No incomes found for the specified user ID")
     })
-    @GetMapping("/userIncomes/{userId}")
-    public ResponseEntity<List<Income>> getIncomesByUserId(
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<IncomeResponseDTO>> getIncomesByUserId(
             @PathVariable @Parameter(description = "User ID to retrieve incomes for") Integer userId) {
         return ResponseEntity.ok(incomeService.getByUserId(userId));
     }
@@ -68,7 +69,7 @@ public class IncomeController {
             @ApiResponse(responseCode = "400", description = "Invalid data for creation")
     })
     @PostMapping
-    public ResponseEntity<Income> save(@RequestBody IncomeDTO income) throws InvalidTextLengthException, InvalidAmmountException, NotFoundException {
+    public ResponseEntity<IncomeResponseDTO> save(@RequestBody IncomeCreateDTO income) throws InvalidTextLengthException, InvalidAmmountException, NotFoundException {
         return ResponseEntity.status(201).body(incomeService.saveIncome(income));
     }
 
@@ -78,7 +79,7 @@ public class IncomeController {
             @ApiResponse(responseCode = "404", description = "Income not found")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Income> update(@PathVariable @Parameter(description = "ID of the income to update") Integer id, @RequestBody IncomeDTO income) throws NotFoundException, InvalidTextLengthException, InvalidAmmountException {
+    public ResponseEntity<IncomeResponseDTO> update(@PathVariable @Parameter(description = "ID of the income to update") Integer id, @RequestBody IncomeCreateDTO income) throws NotFoundException, InvalidTextLengthException, InvalidAmmountException {
         return ResponseEntity.ok(incomeService.updateIncome(id, income));
     }
 

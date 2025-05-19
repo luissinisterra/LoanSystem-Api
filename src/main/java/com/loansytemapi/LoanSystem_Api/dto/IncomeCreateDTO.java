@@ -2,7 +2,7 @@ package com.loansytemapi.LoanSystem_Api.dto;
 
 import java.time.LocalDate;
 
-public class IncomeDTO {
+public class IncomeCreateDTO {
 
     private Integer userId;
     private String incomeType;
@@ -10,7 +10,7 @@ public class IncomeDTO {
     private Integer ammount;
     private LocalDate incomeDate = LocalDate.now();
 
-    public IncomeDTO(Integer ammount, String incomeDescription, String incomeType, Integer userId) {
+    public IncomeCreateDTO(Integer ammount, String incomeDescription, String incomeType, Integer userId) {
         this.ammount = ammount;
         this.incomeDescription = incomeDescription;
         this.incomeType = incomeType;
