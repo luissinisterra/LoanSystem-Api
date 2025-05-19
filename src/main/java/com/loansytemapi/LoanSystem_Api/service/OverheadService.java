@@ -1,17 +1,18 @@
 package com.loansytemapi.LoanSystem_Api.service;
 
-import com.loansytemapi.LoanSystem_Api.dto.OverheadDTO;
+import com.loansytemapi.LoanSystem_Api.dto.CreateOverheadDTO;
+import com.loansytemapi.LoanSystem_Api.dto.OverheadResponseDTO;
 import com.loansytemapi.LoanSystem_Api.exception.*;
 import com.loansytemapi.LoanSystem_Api.model.Overhead;
 import com.loansytemapi.LoanSystem_Api.model.User;
 import com.loansytemapi.LoanSystem_Api.repository.IUserRepository;
 import com.loansytemapi.LoanSystem_Api.repository.OverheadRepository;
 import com.loansytemapi.LoanSystem_Api.service.imp.IOverheadService;
-import org.hibernate.sql.ast.tree.expression.Over;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,17 +29,17 @@ public class OverheadService implements IOverheadService {
         this.userRepository = userRepository;
     }
     @Override
-    public Overhead save(OverheadDTO overhead) throws InvalidTextLengthException, InvalidAmmountException, NotFoundException {
+    public OverheadResponseDTO save(CreateOverheadDTO overhead) throws InvalidTextLengthException, InvalidAmmountException, NotFoundException {
         Optional<User> user = userRepository.findById(overhead.getUserId());
         if (user.isEmpty()){
             throw new NotFoundException("The user with id " + overhead.getUserId() + " does not exist.");
         }
         Overhead newOverhead = getOverhead(overhead, user);
-        return overheadRepository.save(newOverhead);
+        return new OverheadResponseDTO(overheadRepository.save(newOverhead));
     }
 
 
-    private Overhead getOverhead(OverheadDTO overhead, Optional<User> user) throws InvalidTextLengthException, InvalidAmmountException {
+    private Overhead getOverhead(CreateOverheadDTO overhead, Optional<User> user) throws InvalidTextLengthException, InvalidAmmountException {
         Overhead newOverhead = new Overhead();
         newOverhead.setOverhead_type(overhead.getOverheadType());
         newOverhead.setOverhead_description(overhead.getOverheadDescription());
@@ -64,7 +65,7 @@ public class OverheadService implements IOverheadService {
     }
 
     @Override
-    public Overhead update(Integer id, OverheadDTO overhead) throws NotFoundException {
+    public OverheadResponseDTO update(Integer id, CreateOverheadDTO overhead) throws NotFoundException {
         Optional<Overhead> overheadToUpdate = overheadRepository.findById(id);
         if (overheadToUpdate.isEmpty()) {
             throw new NotFoundException("The overhead with id " + id + " does not exist.");
@@ -73,26 +74,36 @@ public class OverheadService implements IOverheadService {
         updatedOverhead.setOverhead_type(overhead.getOverheadType());
         updatedOverhead.setOverhead_description(overhead.getOverheadDescription());
         updatedOverhead.setAmmount(overhead.getAmmount());
-        return overheadRepository.save(updatedOverhead);
+        return new OverheadResponseDTO(overheadRepository.save(updatedOverhead));
     }
 
     @Override
-    public List<Overhead> getAll() {
-        return overheadRepository.findAll();
+    public List<OverheadResponseDTO> getAll() {
+        List<Overhead> all = overheadRepository.findAll();
+        List<OverheadResponseDTO> response = new LinkedList<>();
+        for (Overhead overhead : all) {
+            response.add(new OverheadResponseDTO(overhead));
+        }
+        return response;
     }
 
     @Override
-    public Overhead getByid(Integer id) throws NotFoundException {
+    public OverheadResponseDTO getByid(Integer id) throws NotFoundException {
         Optional<Overhead> overhead = overheadRepository.findById(id);
         if (overhead.isEmpty()) {
             throw new NotFoundException("The overhead with id " + id + " does not exist.");
         }
-        return overhead.get();
+        return new OverheadResponseDTO(overhead.get());
     }
 
     @Override
-    public List<Overhead> getByUserId(Integer userId) {
-        return overheadRepository.findAllByUser_id(userId);
+    public List<OverheadResponseDTO> getByUserId(Integer userId) {
+        List<Overhead> all = overheadRepository.findAllByUser_id(userId);
+        List<OverheadResponseDTO> response = new LinkedList<>();
+        for (Overhead overhead : all) {
+            response.add(new OverheadResponseDTO(overhead));
+        }
+        return response;
     }
 
     @Override

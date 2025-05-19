@@ -1,6 +1,7 @@
 package com.loansytemapi.LoanSystem_Api.controller;
 
-import com.loansytemapi.LoanSystem_Api.dto.OverheadDTO;
+import com.loansytemapi.LoanSystem_Api.dto.CreateOverheadDTO;
+import com.loansytemapi.LoanSystem_Api.dto.OverheadResponseDTO;
 import com.loansytemapi.LoanSystem_Api.exception.IncompleteDataException;
 import com.loansytemapi.LoanSystem_Api.exception.InvalidAmmountException;
 import com.loansytemapi.LoanSystem_Api.exception.InvalidTextLengthException;
@@ -38,11 +39,10 @@ public class OverheadController {
             @ApiResponse(responseCode = "201", description = "Overhead created successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid overhead data")
     })
-    public ResponseEntity<Overhead> createOverhead(
-            @RequestBody @Parameter(description = "Overhead data to be created") OverheadDTO overhead)
+    public ResponseEntity<OverheadResponseDTO> createOverhead(
+            @RequestBody @Parameter(description = "Overhead data to be created") CreateOverheadDTO overhead)
             throws IncompleteDataException, InvalidTextLengthException, InvalidAmmountException, NotFoundException {
-        Overhead created = overheadService.save(overhead);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+        return new ResponseEntity<>(overheadService.save(overhead), HttpStatus.CREATED);
     }
 
     // DELETE
@@ -66,12 +66,11 @@ public class OverheadController {
             @ApiResponse(responseCode = "200", description = "Overhead updated successfully"),
             @ApiResponse(responseCode = "404", description = "Overhead not found")
     })
-    public ResponseEntity<Overhead> updateOverhead(
+    public ResponseEntity<OverheadResponseDTO> updateOverhead(
             @PathVariable @Parameter(description = "ID of the overhead to update") Integer id,
-            @RequestBody @Parameter(description = "Updated overhead details") OverheadDTO overhead)
+            @RequestBody @Parameter(description = "Updated overhead details") CreateOverheadDTO overhead)
             throws NotFoundException {
-        Overhead updated = overheadService.update(id, overhead);
-        return new ResponseEntity<>(updated, HttpStatus.OK);
+        return new ResponseEntity<>(overheadService.update(id, overhead), HttpStatus.OK);
     }
 
     // LIST ALL
@@ -81,7 +80,7 @@ public class OverheadController {
             @ApiResponse(responseCode = "200", description = "Overheads retrieved successfully"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<List<Overhead>> getAllOverheads() {
+    public ResponseEntity<List<OverheadResponseDTO>> getAllOverheads() {
         return new ResponseEntity<>(overheadService.getAll(), HttpStatus.OK);
     }
 
@@ -92,11 +91,10 @@ public class OverheadController {
             @ApiResponse(responseCode = "200", description = "Overhead found"),
             @ApiResponse(responseCode = "404", description = "Overhead not found")
     })
-    public ResponseEntity<Overhead> getOverheadById(
+    public ResponseEntity<OverheadResponseDTO> getOverheadById(
             @PathVariable @Parameter(description = "ID of the overhead to retrieve") Integer id)
             throws NotFoundException {
-        Overhead found = overheadService.getByid(id);
-        return new ResponseEntity<>(found, HttpStatus.OK);
+        return ResponseEntity.ok(overheadService.getByid(id));
     }
 
     @Operation(
@@ -107,12 +105,11 @@ public class OverheadController {
             @ApiResponse(responseCode = "200", description = "Overhead retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "Overhead not found with the given ID")
     })
-    @GetMapping("/users/{id}")
-    public ResponseEntity<Overhead> getOverheadByUserId(
-            @PathVariable @Parameter(description = "ID of the overhead to retrieve") Integer user_id)
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<OverheadResponseDTO>> getOverheadByUserId(
+            @PathVariable @Parameter(description = "ID of the overhead to retrieve") Integer userId)
             throws NotFoundException {
-        Overhead found = overheadService.getByid(user_id);
-        return new ResponseEntity<>(found, HttpStatus.OK);
+        return ResponseEntity.ok(overheadService.getByUserId(userId));
     }
 
     // FILTERED SEARCH
