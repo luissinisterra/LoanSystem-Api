@@ -1,9 +1,12 @@
 package com.loansytemapi.LoanSystem_Api.service;
 
+import com.loansytemapi.LoanSystem_Api.dto.IncomeDTO;
 import com.loansytemapi.LoanSystem_Api.exception.InvalidAmmountException;
 import com.loansytemapi.LoanSystem_Api.exception.InvalidTextLengthException;
 import com.loansytemapi.LoanSystem_Api.exception.NotFoundException;
 import com.loansytemapi.LoanSystem_Api.model.Income;
+import com.loansytemapi.LoanSystem_Api.model.User;
+import com.loansytemapi.LoanSystem_Api.repository.IUserRepository;
 import com.loansytemapi.LoanSystem_Api.repository.IncomeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,20 +20,31 @@ public class IncomeService implements IIncomeService {
 
     @Autowired
     private IncomeRepository incomeRepository;
+    private IUserRepository userRepository;
 
-    public IncomeService(IncomeRepository incomeRepository) {
+    public IncomeService(IncomeRepository incomeRepository, IUserRepository userRepository) {
         this.incomeRepository = incomeRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
-    public Income saveIncome(Income income) throws InvalidTextLengthException, InvalidAmmountException {
-        if (income.getIncome_description().length() > 50){
+    public Income saveIncome(IncomeDTO income) throws InvalidTextLengthException, InvalidAmmountException, NotFoundException {
+        Optional<User> user = userRepository.findById(income.getUserId());
+        if (user.isEmpty()){
+            throw new NotFoundException("User not found");
+        }
+        Income newIncome = new Income();
+        newIncome.setAmmount(income.getAmmount());
+        newIncome.setIncome_description(income.getIncomeDescription());
+        newIncome.setIncome_type(income.getIncomeType());
+        newIncome.setUser(user.get());
+        if (newIncome.getIncome_description().length() > 50) {
             throw new InvalidTextLengthException("The income description must not exceed 50 characters.");
         }
         if (income.getAmmount() <= 0){
             throw new InvalidAmmountException("The amount must be greater than zero.");
         }
-        return incomeRepository.save(income);
+        return incomeRepository.save(newIncome);
     }
 
     @Override
@@ -57,14 +71,21 @@ public class IncomeService implements IIncomeService {
     }
 
     @Override
-    public Income updateIncome(Income income) throws NotFoundException {
-        Optional<Income> i = incomeRepository.findById(income.getId());
+    public Income updateIncome(Integer id, IncomeDTO income) throws NotFoundException, InvalidTextLengthException, InvalidAmmountException {
+        Optional<Income> i = incomeRepository.findById(id);
         if (i.isEmpty()){
             throw new NotFoundException("Income not found");
         }
-        income.setId(i.get().getId());
-        income.setIncome_date(i.get().getIncome_date());
-        return incomeRepository.save(income);
+        i.get().setAmmount(income.getAmmount());
+        i.get().setIncome_description(income.getIncomeDescription());
+        i.get().setIncome_type(income.getIncomeType());
+        if (i.get().getIncome_description().length() > 50) {
+            throw new InvalidTextLengthException("The income description must not exceed 50 characters.");
+        }
+        if (income.getAmmount() <= 0){
+            throw new InvalidAmmountException("The amount must be greater than zero.");
+        }
+        return incomeRepository.save(i.get());
     }
 
     @Override
