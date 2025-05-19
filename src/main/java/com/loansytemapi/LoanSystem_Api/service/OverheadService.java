@@ -1,9 +1,13 @@
 package com.loansytemapi.LoanSystem_Api.service;
 
+import com.loansytemapi.LoanSystem_Api.dto.OverheadDTO;
 import com.loansytemapi.LoanSystem_Api.exception.*;
 import com.loansytemapi.LoanSystem_Api.model.Overhead;
+import com.loansytemapi.LoanSystem_Api.model.User;
+import com.loansytemapi.LoanSystem_Api.repository.IUserRepository;
 import com.loansytemapi.LoanSystem_Api.repository.OverheadRepository;
 import com.loansytemapi.LoanSystem_Api.service.imp.IOverheadService;
+import org.hibernate.sql.ast.tree.expression.Over;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,20 +20,38 @@ import java.util.stream.Collectors;
 public class OverheadService implements IOverheadService {
 
     private final OverheadRepository overheadRepository;
+    private final IUserRepository userRepository;
 
     @Autowired
-    public OverheadService(OverheadRepository overheadRepository) {
+    public OverheadService(OverheadRepository overheadRepository, IUserRepository userRepository) {
         this.overheadRepository = overheadRepository;
+        this.userRepository = userRepository;
     }
     @Override
-    public Overhead save(Overhead overhead) throws InvalidTextLengthException, InvalidAmmountException{
-        if (overhead.getOverhead_description().length() > 50) {
+    public Overhead save(OverheadDTO overhead) throws InvalidTextLengthException, InvalidAmmountException, NotFoundException {
+        Optional<User> user = userRepository.findById(overhead.getUserId());
+        if (user.isEmpty()){
+            throw new NotFoundException("The user with id " + overhead.getUserId() + " does not exist.");
+        }
+        Overhead newOverhead = getOverhead(overhead, user);
+        return overheadRepository.save(newOverhead);
+    }
+
+
+    private Overhead getOverhead(OverheadDTO overhead, Optional<User> user) throws InvalidTextLengthException, InvalidAmmountException {
+        Overhead newOverhead = new Overhead();
+        newOverhead.setOverhead_type(overhead.getOverheadType());
+        newOverhead.setOverhead_description(overhead.getOverheadDescription());
+        newOverhead.setAmmount(overhead.getAmmount());
+        newOverhead.setUser(user.get());
+        newOverhead.setOverhead_date(overhead.getOverheadDate());
+        if (newOverhead.getOverhead_description().length() > 50) {
             throw new InvalidTextLengthException("The income description must not exceed 50 characters.");
         }
-        if (overhead.getAmmount() <= 0){
+        if (newOverhead.getAmmount() <= 0){
             throw new InvalidAmmountException("The income amount must be greater than zero.");
         }
-        return overheadRepository.save(overhead);
+        return newOverhead;
     }
 
     @Override
@@ -42,14 +64,16 @@ public class OverheadService implements IOverheadService {
     }
 
     @Override
-    public Overhead update(Overhead gasto) throws NotFoundException {
-        Optional<Overhead> overhead = overheadRepository.findById(gasto.getId());
-        if (overhead.isEmpty()) {
-            throw new NotFoundException("The overhead with id " + gasto.getId() + " does not exist.");
+    public Overhead update(Integer id, OverheadDTO overhead) throws NotFoundException {
+        Optional<Overhead> overheadToUpdate = overheadRepository.findById(id);
+        if (overheadToUpdate.isEmpty()) {
+            throw new NotFoundException("The overhead with id " + id + " does not exist.");
         }
-        gasto.setOverhead_date(overhead.get().getOverhead_date());
-        gasto.setId(overhead.get().getId());
-        return overheadRepository.save(gasto);
+        Overhead updatedOverhead = overheadToUpdate.get();
+        updatedOverhead.setOverhead_type(overhead.getOverheadType());
+        updatedOverhead.setOverhead_description(overhead.getOverheadDescription());
+        updatedOverhead.setAmmount(overhead.getAmmount());
+        return overheadRepository.save(updatedOverhead);
     }
 
     @Override

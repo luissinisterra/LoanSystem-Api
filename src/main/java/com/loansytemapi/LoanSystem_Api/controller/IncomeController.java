@@ -1,5 +1,6 @@
 package com.loansytemapi.LoanSystem_Api.controller;
 
+import com.loansytemapi.LoanSystem_Api.dto.IncomeDTO;
 import com.loansytemapi.LoanSystem_Api.exception.InvalidAmmountException;
 import com.loansytemapi.LoanSystem_Api.exception.InvalidTextLengthException;
 import com.loansytemapi.LoanSystem_Api.exception.NotFoundException;
@@ -67,7 +68,7 @@ public class IncomeController {
             @ApiResponse(responseCode = "400", description = "Invalid data for creation")
     })
     @PostMapping
-    public ResponseEntity<Income> save(@RequestBody Income income) throws InvalidTextLengthException, InvalidAmmountException {
+    public ResponseEntity<Income> save(@RequestBody IncomeDTO income) throws InvalidTextLengthException, InvalidAmmountException, NotFoundException {
         return ResponseEntity.status(201).body(incomeService.saveIncome(income));
     }
 
@@ -77,9 +78,8 @@ public class IncomeController {
             @ApiResponse(responseCode = "404", description = "Income not found")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Income> update(@PathVariable @Parameter(description = "ID of the income to update") Integer id, @RequestBody Income income) throws NotFoundException {
-        income.setId(id);
-        return ResponseEntity.ok(incomeService.updateIncome(income));
+    public ResponseEntity<Income> update(@PathVariable @Parameter(description = "ID of the income to update") Integer id, @RequestBody IncomeDTO income) throws NotFoundException, InvalidTextLengthException, InvalidAmmountException {
+        return ResponseEntity.ok(incomeService.updateIncome(id, income));
     }
 
     @Operation(summary = "Delete an income", description = "Deletes an income by its ID")

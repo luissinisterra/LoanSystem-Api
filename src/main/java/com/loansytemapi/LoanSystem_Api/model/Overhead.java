@@ -53,14 +53,6 @@ public class Overhead {
         this.overhead_type = overhead_type;
     }
 
-    public Integer getCantidad() {
-        return ammount;
-    }
-
-    public void setCantidad(Integer cantidad) {
-        this.ammount = cantidad;
-    }
-
     public LocalDate getOverhead_date() {
         return overhead_date;
     }

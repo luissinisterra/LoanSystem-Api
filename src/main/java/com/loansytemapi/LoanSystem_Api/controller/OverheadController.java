@@ -1,5 +1,6 @@
 package com.loansytemapi.LoanSystem_Api.controller;
 
+import com.loansytemapi.LoanSystem_Api.dto.OverheadDTO;
 import com.loansytemapi.LoanSystem_Api.exception.IncompleteDataException;
 import com.loansytemapi.LoanSystem_Api.exception.InvalidAmmountException;
 import com.loansytemapi.LoanSystem_Api.exception.InvalidTextLengthException;
@@ -38,8 +39,8 @@ public class OverheadController {
             @ApiResponse(responseCode = "400", description = "Invalid overhead data")
     })
     public ResponseEntity<Overhead> createOverhead(
-            @RequestBody @Parameter(description = "Overhead data to be created") Overhead overhead)
-            throws IncompleteDataException, InvalidTextLengthException, InvalidAmmountException {
+            @RequestBody @Parameter(description = "Overhead data to be created") OverheadDTO overhead)
+            throws IncompleteDataException, InvalidTextLengthException, InvalidAmmountException, NotFoundException {
         Overhead created = overheadService.save(overhead);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
@@ -67,10 +68,9 @@ public class OverheadController {
     })
     public ResponseEntity<Overhead> updateOverhead(
             @PathVariable @Parameter(description = "ID of the overhead to update") Integer id,
-            @RequestBody @Parameter(description = "Updated overhead details") Overhead overhead)
+            @RequestBody @Parameter(description = "Updated overhead details") OverheadDTO overhead)
             throws NotFoundException {
-        overhead.setId(id);
-        Overhead updated = overheadService.update(overhead);
+        Overhead updated = overheadService.update(id, overhead);
         return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 
