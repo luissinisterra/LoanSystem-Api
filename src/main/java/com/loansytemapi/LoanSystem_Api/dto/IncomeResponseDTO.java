@@ -25,7 +25,7 @@ public class IncomeResponseDTO {
 
     public IncomeResponseDTO(Income income) {
         this.id = income.getId();
-        this.userId = income.getUser().getId(); // extraes solo el ID del usuario
+        this.userId = income.getUser().getId();
         this.incomeType = income.getIncome_type();
         this.incomeDescription = income.getIncome_description();
         this.ammount = income.getAmmount();
