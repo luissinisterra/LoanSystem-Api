@@ -35,6 +35,11 @@ public class LoanService implements ILoanService {
     }
 
     @Override
+    public List<Loan> getAllLoansByClientId(int clientId) {
+        return iLoanRepository.findAllByClient_Id(clientId);
+    }
+
+    @Override
     public List<Loan> getAllLoansByUserId(int userId) {
         return iLoanRepository.findAllByUser_Id(userId);
     }

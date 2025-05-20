@@ -1,8 +1,10 @@
 package com.loansytemapi.LoanSystem_Api.controller;
 
+import com.loansytemapi.LoanSystem_Api.dto.ClientDTO;
 import com.loansytemapi.LoanSystem_Api.exception.IncompleteDataException;
 import com.loansytemapi.LoanSystem_Api.exception.NotFoundException;
     import com.loansytemapi.LoanSystem_Api.model.Client;
+import com.loansytemapi.LoanSystem_Api.model.Loan;
 import com.loansytemapi.LoanSystem_Api.service.imp.IClientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -42,6 +44,20 @@ public class ClientController {
         return new ResponseEntity<>(clients, HttpStatus.OK);
     }
 
+    @Operation(summary = "Obtener todos los clientes de un usuario en especifico", description = "Retorna una lista con todos los clientes registrados que tiene un usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de clientes obtenida exitosamente"),
+            @ApiResponse(responseCode = "204", description = "No hay clientes disponibles")
+    })
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Client>> getAllClientsByUserId(@PathVariable int userId) throws NotFoundException {
+        List<Client> userClients = this.iClientService.getAllClientsByUserId(userId);
+        if (userClients.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(userClients, HttpStatus.OK);
+    }
+
     @Operation(summary = "Obtener cliente por ID", description = "Busca un cliente específico por su ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Cliente encontrado"),
@@ -63,7 +79,7 @@ public class ClientController {
             @ApiResponse(responseCode = "400", description = "Datos incompletos o inválidos")
     })
     @PostMapping
-    public ResponseEntity<Client> createClient(@RequestBody @Parameter(description = "Datos del cliente a crear") Client newClient) throws IncompleteDataException {
+    public ResponseEntity<Client> createClient(@RequestBody @Parameter(description = "Datos del cliente a crear") ClientDTO newClient) throws IncompleteDataException, NotFoundException {
         if (newClient == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
