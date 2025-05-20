@@ -37,9 +37,8 @@ public class Client {
     @Column(name = "active", nullable = false)
     private boolean active;
 
-    @ManyToOne
-    @JoinColumn(name = "address_id", referencedColumnName = "id", nullable = false)
-    private Address address;
+    @Column(name = "direction", nullable = false)
+    private String direction;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
@@ -119,12 +118,12 @@ public class Client {
         this.active = active;
     }
 
-    public Address getAddress() {
-        return address;
+    public String getDirection() {
+        return direction;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setDirection(String direction) {
+        this.direction = direction;
     }
 
     public User getUser() {
