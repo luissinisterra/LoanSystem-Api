@@ -42,20 +42,20 @@ public class LoanController {
         }
         return new ResponseEntity<>(loans, HttpStatus.OK);
     }
-    @Operation(summary = "Obtener todos los préstamos de un cliente en específico", description = "Retorna una lista con todos los préstamos registrados que tiene un cliente")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista de préstamos obtenida exitosamente"),
-            @ApiResponse(responseCode = "204", description = "No hay préstamos disponibles")
-    })
-    @GetMapping("/client-loans/{userId}") // Aquí userId en la URL
-    public ResponseEntity<List<Loan>> getAllLoansByClientId(@PathVariable int userId) throws NotFoundException {
-        List<Loan> clientLoans = this.iLoanService.getAllLoansByClientId(userId);
-        if (clientLoans.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(clientLoans, HttpStatus.OK);
-    }
 
+        @Operation(summary = "Obtener todos los préstamos de un cliente en especifico", description = "Retorna una lista con todos los préstamos registrados que tiene un cliente")
+        @ApiResponses(value = {
+                @ApiResponse(responseCode = "200", description = "Lista de préstamos obtenida exitosamente"),
+                @ApiResponse(responseCode = "204", description = "No hay préstamos disponibles")
+        })
+        @GetMapping("/client-loans/{userId}")
+        public ResponseEntity<List<Loan>> getAllLoansByClientId(@PathVariable int clientId) throws NotFoundException {
+            List<Loan> clientLoans = this.iLoanService.getAllLoansByClientId(clientId);
+            if (clientLoans.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(clientLoans, HttpStatus.OK);
+        }
 
     @Operation(summary = "Obtener todos los préstamos de un usuario en especifico", description = "Retorna una lista con todos los préstamos registrados que tiene un usuario")
     @ApiResponses(value = {

@@ -1,47 +1,31 @@
-package com.loansytemapi.LoanSystem_Api.model;
+package com.loansytemapi.LoanSystem_Api.dto;
 
-import jakarta.persistence.*;
+public class ClientDTO {
 
-@Entity
-@Table(name = "clients")
-public class Client {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    @Column(name = "first_name", nullable = false)
     private String firstName;
-
-    @Column(name = "second_name", nullable = false)
     private String secondName;
-
-    @Column(name = "first_surname", nullable = false)
     private String firstSurname;
-
-    @Column(name = "second_surname", nullable = false)
     private String secondSurname;
-
-    @Column(name = "age", nullable = false)
     private int age;
-
-    @Column(name = "email", nullable = false, unique = true)
     private String email;
-
-    @Column(name = "phone", nullable = false)
     private String phone;
-
-    @Column(name = "active", nullable = false)
     private boolean active;
-
-    @Column(name = "address", nullable = false)
     private String address;
+    private int userId;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-    private User user;
-
-    public Client() {}
+    public ClientDTO(String firstName, String secondName, String firstSurname, String secondSurname, int age, String email, String phone, String address, int userId) {
+        this.firstName = firstName;
+        this.secondName = secondName;
+        this.firstSurname = firstSurname;
+        this.secondSurname = secondSurname;
+        this.age = age;
+        this.email = email;
+        this.phone = phone;
+        this.active = true;
+        this.address = address;
+        this.userId = userId;
+    }
 
     public int getId() {
         return id;
@@ -123,11 +107,12 @@ public class Client {
         this.address = address;
     }
 
-    public User getUser() {
-        return user;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }
+
