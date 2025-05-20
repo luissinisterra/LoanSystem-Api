@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface ILoanService {
     List<Loan> getAllLoans();
+    List<Loan> getAllLoansByClientId(int clientId) throws NotFoundException;
     List<Loan> getAllLoansByUserId(int userId) throws NotFoundException;
     Loan getLoanById(int id) throws NotFoundException;
     Loan deleteLoan(int id) throws NotFoundException;

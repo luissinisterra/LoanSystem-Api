@@ -9,5 +9,4 @@ import java.util.List;
 
 public interface ILoanRepository extends JpaRepository<Loan, Integer> {
     List<Loan> findAllByUser_Id(int userId);
-    int user(User user);
 }
