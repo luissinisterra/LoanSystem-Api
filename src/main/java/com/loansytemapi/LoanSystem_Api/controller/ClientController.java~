@@ -96,7 +96,7 @@ public class ClientController {
     @PutMapping("/{id}")
     public ResponseEntity<Client> updateClient(
             @PathVariable @Parameter(description = "ID del cliente a actualizar") int id,
-            @RequestBody @Parameter(description = "Datos actualizados del cliente") ClientDTO newClient)
+            @RequestBody @Parameter(description = "Datos actualizados del cliente") ClientTO newClient)
             throws IncompleteDataException, NotFoundException {
 
         if (newClient == null) {

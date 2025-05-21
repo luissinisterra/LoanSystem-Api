@@ -3,16 +3,16 @@ package com.loansytemapi.LoanSystem_Api.dto;
 import java.time.LocalDate;
 
 public class LoanDTO {
-    private int id;
+
     private double amount;
     private double interestRate;
-    private double term;
+    private int term;
     private boolean active;
     private LocalDate date;
     private int clientId;
     private int userId;
 
-    public LoanDTO(double amount, double interestRate, double term, boolean active, LocalDate date, int clientId, int userId) {
+    public LoanDTO(double amount, double interestRate, int term, boolean active, LocalDate date, int clientId, int userId) {
         this.amount = amount;
         this.interestRate = interestRate;
         this.term = term;
@@ -20,14 +20,6 @@ public class LoanDTO {
         this.date = date;
         this.clientId = clientId;
         this.userId = userId;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public double getAmount() {
@@ -46,11 +38,11 @@ public class LoanDTO {
         this.interestRate = interestRate;
     }
 
-    public double getTerm() {
+    public int getTerm() {
         return term;
     }
 
-    public void setTerm(double term) {
+    public void setTerm(int term) {
         this.term = term;
     }
 

@@ -1,6 +1,7 @@
 package com.loansytemapi.LoanSystem_Api.controller;
 
 import com.loansytemapi.LoanSystem_Api.dto.LoanDTO;
+import com.loansytemapi.LoanSystem_Api.dto.LoanResponseDTO;
 import com.loansytemapi.LoanSystem_Api.exception.IncompleteDataException;
 import com.loansytemapi.LoanSystem_Api.exception.NotFoundException;
 import com.loansytemapi.LoanSystem_Api.model.Loan;
@@ -77,10 +78,10 @@ public class LoanController {
             @ApiResponse(responseCode = "404", description = "Préstamo no encontrado")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Loan> getLoanById(
+    public ResponseEntity<LoanResponseDTO> getLoanById(
             @PathVariable @Parameter(description = "ID del préstamo a buscar") int id) {
         try {
-            Loan loan = this.iLoanService.getLoanById(id);
+            LoanResponseDTO loan = this.iLoanService.getLoanById(id);
             return new ResponseEntity<>(loan, HttpStatus.OK);
         } catch (NotFoundException ex) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -127,10 +128,10 @@ public class LoanController {
             @ApiResponse(responseCode = "404", description = "Préstamo no encontrado")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Loan> deleteLoan(
+    public ResponseEntity<LoanResponseDTO> deleteLoan(
             @PathVariable @Parameter(description = "ID del préstamo a eliminar") int id) {
         try {
-            Loan loan = this.iLoanService.deleteLoan(id);
+            LoanResponseDTO loan = this.iLoanService.deleteLoan(id);
             return new ResponseEntity<>(loan, HttpStatus.OK);
         } catch (NotFoundException ex) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
