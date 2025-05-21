@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 public class Client {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "first_name", nullable = false)
