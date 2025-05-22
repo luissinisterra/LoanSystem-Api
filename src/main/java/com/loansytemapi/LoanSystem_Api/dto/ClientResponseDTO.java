@@ -1,7 +1,8 @@
 package com.loansytemapi.LoanSystem_Api.dto;
 
-public class ClientDTO {
+import com.loansytemapi.LoanSystem_Api.model.Client;
 
+public class ClientResponseDTO {
     private int id;
     private String firstName;
     private String secondName;
@@ -14,7 +15,7 @@ public class ClientDTO {
     private String address;
     private int userId;
 
-    public ClientDTO(int id, String firstName, String secondName, String firstSurname, String secondSurname, int age, String email, String phone, String address, int userId) {
+    public ClientResponseDTO(int id, String firstName, String secondName, String firstSurname, String secondSurname, int age, String email, String phone, boolean active, String address, int userId) {
         this.id = id;
         this.firstName = firstName;
         this.secondName = secondName;
@@ -23,9 +24,23 @@ public class ClientDTO {
         this.age = age;
         this.email = email;
         this.phone = phone;
-        this.active = true;
+        this.active = active;
         this.address = address;
         this.userId = userId;
+    }
+
+    public ClientResponseDTO(Client client) {
+        this.id = client.getId();
+        this.firstName = client.getFirstName();
+        this.secondName = client.getSecondName();
+        this.firstSurname = client.getFirstSurname();
+        this.secondSurname = client.getSecondSurname();
+        this.age = client.getAge();
+        this.email = client.getEmail();
+        this.phone = client.getPhone();
+        this.active = client.isActive();
+        this.address = client.getAddress();
+        this.userId = client.getUser().getId();
     }
 
     public int getId() {
