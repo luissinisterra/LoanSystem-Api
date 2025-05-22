@@ -36,8 +36,8 @@ public class LoanController {
             @ApiResponse(responseCode = "204", description = "No hay préstamos disponibles")
     })
     @GetMapping
-    public ResponseEntity<List<Loan>> getAllLoans() {
-        List<Loan> loans = this.iLoanService.getAllLoans();
+    public ResponseEntity<List<LoanResponseDTO>> getAllLoans() {
+        List<LoanResponseDTO> loans = this.iLoanService.getAllLoans();
         if (loans.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -49,8 +49,8 @@ public class LoanController {
             @ApiResponse(responseCode = "204", description = "No hay préstamos disponibles")
     })
     @GetMapping("/client-loans/{userId}") // Aquí userId en la URL
-    public ResponseEntity<List<Loan>> getAllLoansByClientId(@PathVariable int userId) throws NotFoundException {
-        List<Loan> clientLoans = this.iLoanService.getAllLoansByClientId(userId);
+    public ResponseEntity<List<LoanResponseDTO>> getAllLoansByClientId(@PathVariable int userId) throws NotFoundException {
+        List<LoanResponseDTO> clientLoans = this.iLoanService.getAllLoansByClientId(userId);
         if (clientLoans.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -64,8 +64,8 @@ public class LoanController {
             @ApiResponse(responseCode = "204", description = "No hay préstamos disponibles")
     })
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Loan>> getAllLoansByUserId(@PathVariable int userId) throws NotFoundException {
-        List<Loan> userLoans = this.iLoanService.getAllLoansByUserId(userId);
+    public ResponseEntity<List<LoanResponseDTO>> getAllLoansByUserId(@PathVariable int userId) throws NotFoundException {
+        List<LoanResponseDTO> userLoans = this.iLoanService.getAllLoansByUserId(userId);
         if (userLoans.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -94,11 +94,11 @@ public class LoanController {
             @ApiResponse(responseCode = "400", description = "Datos incompletos o inválidos")
     })
     @PostMapping
-    public ResponseEntity<Loan> createLoan(@RequestBody LoanDTO newLoan) throws IncompleteDataException, NotFoundException {
+    public ResponseEntity<LoanResponseDTO> createLoan(@RequestBody LoanDTO newLoan) throws IncompleteDataException, NotFoundException {
         if (newLoan == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Loan loan = this.iLoanService.createLoan(newLoan);
+        LoanResponseDTO loan = this.iLoanService.createLoan(newLoan);
         return new ResponseEntity<>(loan, HttpStatus.CREATED);
     }
 
@@ -109,7 +109,7 @@ public class LoanController {
             @ApiResponse(responseCode = "404", description = "Préstamo no encontrado")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Loan> updateLoan(
+    public ResponseEntity<LoanResponseDTO> updateLoan(
             @PathVariable @Parameter(description = "ID del préstamo a actualizar") int id,
             @RequestBody @Parameter(description = "Datos actualizados del préstamo") LoanDTO updatedLoan)
             throws IncompleteDataException, NotFoundException {
@@ -118,7 +118,7 @@ public class LoanController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        Loan loan = this.iLoanService.updateLoan(id, updatedLoan);
+        LoanResponseDTO loan = this.iLoanService.updateLoan(id, updatedLoan);
         return new ResponseEntity<>(loan, HttpStatus.OK);
     }
 
@@ -128,10 +128,10 @@ public class LoanController {
             @ApiResponse(responseCode = "404", description = "Préstamo no encontrado")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Loan> deleteLoan(
+    public ResponseEntity<LoanResponseDTO> deleteLoan(
             @PathVariable @Parameter(description = "ID del préstamo a eliminar") int id) {
         try {
-            Loan loan = this.iLoanService.deleteLoan(id);
+            LoanResponseDTO loan = this.iLoanService.deleteLoan(id);
             return new ResponseEntity<>(loan, HttpStatus.OK);
         } catch (NotFoundException ex) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -146,7 +146,7 @@ public class LoanController {
     @GetMapping("/search/{userId}")
     public ResponseEntity<List<Loan>> searchLoans(@PathVariable int userId,
             @RequestParam(required = false) @Parameter(description = "Texto de búsqueda para filtrar préstamos") String query) {
-        List<Loan> loans = this.iLoanService.searchLoansByQuery(userId, query);
+        List<LoanResponseDTO> loans = this.iLoanService.searchLoansByQuery(userId, query);
         if (loans.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }

@@ -14,8 +14,8 @@ import com.loansytemapi.LoanSystem_Api.service.imp.ILoanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -33,18 +33,39 @@ public class LoanService implements ILoanService {
     }
 
     @Override
-    public List<Loan> getAllLoans() {
-        return iLoanRepository.findAll();
+    public List<LoanResponseDTO> getAllLoans() {
+        List<Loan> all = iLoanRepository.findAll();
+        List<LoanResponseDTO> allDTO = new ArrayList<>();
+
+        for (Loan loan : all) {
+            allDTO.add(new LoanResponseDTO(loan));
+        }
+
+        return allDTO;
     }
 
     @Override
-    public List<Loan> getAllLoansByClientId(int clientId) {
-        return iLoanRepository.findAllByClient_Id(clientId);
+    public List<LoanResponseDTO> getAllLoansByClientId(int clientId) {
+        List<Loan> all = iLoanRepository.findAllByClient_Id(clientId);
+        List<LoanResponseDTO> allDTO = new ArrayList<>();
+
+        for (Loan loan : all) {
+            allDTO.add(new LoanResponseDTO(loan));
+        }
+
+        return allDTO;
     }
 
     @Override
-    public List<Loan> getAllLoansByUserId(int userId) {
-        return iLoanRepository.findAllByUser_Id(userId);
+    public List<LoanResponseDTO> getAllLoansByUserId(int userId) {
+        List<Loan> all = iLoanRepository.findAllByUser_Id(userId);
+        List<LoanResponseDTO> allDTO = new ArrayList<>();
+
+        for (Loan loan : all) {
+            allDTO.add(new LoanResponseDTO(loan));
+        }
+
+        return allDTO;
     }
 
     @Override
@@ -54,7 +75,7 @@ public class LoanService implements ILoanService {
     }
 
     @Override
-    public Loan createLoan(LoanDTO newLoan) throws IncompleteDataException, NotFoundException {
+    public LoanResponseDTO createLoan(LoanDTO newLoan) throws IncompleteDataException, NotFoundException {
 
         Client client = this.iClientRepository.findById(newLoan.getClientId())
                 .orElseThrow(() -> new NotFoundException("Cliente no encontrado"));
@@ -90,7 +111,7 @@ public class LoanService implements ILoanService {
             throw new IncompleteDataException("El usuario es obligatorio.");
         }
 
-        return iLoanRepository.save(loan);
+        return new LoanResponseDTO(this.iLoanRepository.save(loan));
     }
 
     @Override
@@ -101,7 +122,7 @@ public class LoanService implements ILoanService {
     }
 
     @Override
-    public Loan updateLoan(int id, LoanDTO updatedLoan) throws IncompleteDataException, NotFoundException {
+    public LoanResponseDTO updateLoan(int id, LoanDTO updatedLoan) throws IncompleteDataException, NotFoundException {
 
         Client client = this.iClientRepository.findById(updatedLoan.getClientId())
                 .orElseThrow(() -> new NotFoundException("Cliente no encontrado"));
@@ -138,23 +159,39 @@ public class LoanService implements ILoanService {
             throw new IncompleteDataException("El usuario es obligatorio.");
         }
 
-        return iLoanRepository.save(loan);
+        return new LoanResponseDTO(this.iLoanRepository.save(loan));
     }
 
     @Override
-    public List<Loan> searchLoansByQuery(int userId, String query) {
+    public List<LoanResponseDTO> searchLoansByQuery(int userId, String query) {
         if (query == null || query.trim().isEmpty()) {
-            return iLoanRepository.findAll();
+
+            List<Loan> all = iLoanRepository.findAllByUser_Id(userId);
+            List<LoanResponseDTO> allDTO = new ArrayList<>();
+
+            for (Loan loan : all) {
+                allDTO.add(new LoanResponseDTO(loan));
+            }
+
+            return allDTO;
         }
 
         String queryLower = query.toLowerCase().trim();
 
-        return iLoanRepository.findAllByUser_Id(userId).stream().filter(loan ->
+        List<Loan> all = iLoanRepository.findAllByUser_Id(userId).stream().filter(loan ->
                                 String.valueOf(loan.getId()).toLowerCase().contains(queryLower.toLowerCase()) ||
                                 String.valueOf(loan.getAmount()).toLowerCase().contains(queryLower.toLowerCase()) ||
                                 String.valueOf(loan.getInterestRate()).toLowerCase().contains(queryLower.toLowerCase()) ||
                                 String.valueOf(loan.getTerm()).toLowerCase().contains(queryLower.toLowerCase()) ||
                                 String.valueOf(loan.isActive() ? "Activo" : "Pagado").toLowerCase().contains(queryLower.toLowerCase()) ||
                                 String.valueOf(loan.getDate()).toLowerCase().contains(queryLower.toLowerCase())).toList();
+
+        List<LoanResponseDTO> allDTO = new ArrayList<>();
+
+        for (Loan loan : all) {
+            allDTO.add(new LoanResponseDTO(loan));
+        }
+
+        return allDTO;
     }
 }

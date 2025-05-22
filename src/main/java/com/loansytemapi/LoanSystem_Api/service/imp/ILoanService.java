@@ -8,12 +8,12 @@ import com.loansytemapi.LoanSystem_Api.model.Loan;
 import java.util.List;
 
 public interface ILoanService {
-    List<Loan> getAllLoans();
-    List<Loan> getAllLoansByClientId(int clientId) throws NotFoundException;
-    List<Loan> getAllLoansByUserId(int userId) throws NotFoundException;
+    List<LoanResponseDTO> getAllLoans();
+    List<LoanResponseDTO> getAllLoansByClientId(int clientId) throws NotFoundException;
+    List<LoanResponseDTO> getAllLoansByUserId(int userId) throws NotFoundException;
     LoanResponseDTO getLoanById(int id) throws NotFoundException;
     LoanResponseDTO deleteLoan(int id) throws NotFoundException;
-    Loan createLoan(LoanDTO loan) throws IncompleteDataException, NotFoundException;
-    Loan updateLoan(int id, LoanDTO loan) throws IncompleteDataException, NotFoundException;
-    List<Loan> searchLoansByQuery(int userId, String query);
+    LoanResponseDTO createLoan(LoanDTO loan) throws IncompleteDataException, NotFoundException;
+    LoanResponseDTO updateLoan(int id, LoanDTO loan) throws IncompleteDataException, NotFoundException;
+    List<LoanResponseDTO> searchLoansByQuery(int userId, String query);
 }

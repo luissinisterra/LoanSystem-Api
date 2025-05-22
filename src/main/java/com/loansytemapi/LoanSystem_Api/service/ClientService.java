@@ -149,8 +149,7 @@ public class ClientService implements IClientService {
         String queryLower = query.toLowerCase().trim();
 
         return this.iClientRepository.findAllByUser_Id(userId).stream()
-                .filter(client ->
-                        String.valueOf(client.getId()).toLowerCase().contains(queryLower) ||
+                .filter(client -> String.valueOf(client.getId()).toLowerCase().contains(queryLower) ||
                                 client.getFirstName().toLowerCase().contains(queryLower) ||
                                 client.getSecondName().toLowerCase().contains(queryLower) ||
                                 client.getFirstSurname().toLowerCase().contains(queryLower) ||

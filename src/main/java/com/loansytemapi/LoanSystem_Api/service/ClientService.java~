@@ -157,7 +157,6 @@ public class ClientService implements IClientService {
                                 client.getSecondSurname().toLowerCase().contains(queryLower) ||
                                 client.getEmail().toLowerCase().contains(queryLower) ||
                                 client.getPhone().toLowerCase().contains(queryLower) ||
-                                client.getAddress().toLowerCase().contains(queryLower)
-                ).toList();
+                                client.getAddress().toLowerCase().contains(queryLower)).toList();
     }
 }
