@@ -96,7 +96,7 @@ public class ClientController {
     @PutMapping("/{id}")
     public ResponseEntity<Client> updateClient(
             @PathVariable @Parameter(description = "ID del cliente a actualizar") int id,
-            @RequestBody @Parameter(description = "Datos actualizados del cliente") ClientTO newClient)
+            @RequestBody @Parameter(description = "Datos actualizados del cliente") ClientDTO newClient)
             throws IncompleteDataException, NotFoundException {
 
         if (newClient == null) {
@@ -128,9 +128,9 @@ public class ClientController {
             @ApiResponse(responseCode = "204", description = "No se encontraron coincidencias")
     })
     @GetMapping("/search")
-    public ResponseEntity<List<Client>> searchClients(
+    public ResponseEntity<List<Client>> searchClients(@PathVariable int userId,
             @RequestParam(required = false) @Parameter(description = "Texto de búsqueda para filtrar clientes") String query) {
-        List<Client> clients = this.iClientService.searchClientsByQuery(query);
+        List<Client> clients = this.iClientService.searchClientsByQuery(userId,query);
         if (clients.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }

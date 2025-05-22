@@ -11,7 +11,7 @@ public interface IClientService {
     List<Client> getAllClientsByUserId(int userId) throws NotFoundException;
     Client getClientById(int id) throws NotFoundException;
     Client createClient(ClientDTO client) throws IncompleteDataException, NotFoundException;
-    Client updateClient(int id, Client client) throws IncompleteDataException, NotFoundException;
+    Client updateClient(int id, ClientDTO client) throws IncompleteDataException, NotFoundException;
     Client deleteClient(int id) throws NotFoundException;
     List<Client> searchClientsByQuery(String query);
 }

@@ -54,7 +54,7 @@ public class ClientService implements IClientService {
                 .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
 
         Client newClient = new Client();
-        newClient.setUserId(client.getUserId());
+        newClient.setId(client.getUserId());
         newClient.setFirstName(client.getFirstName());
         newClient.setSecondName(client.getSecondName());
         newClient.setFirstSurname(client.getFirstSurname());
@@ -141,11 +141,23 @@ public class ClientService implements IClientService {
     }
 
     @Override
-    public List<Client> searchClientsByQuery(String query) {
+    public List<Client> searchClientsByQuery(int userId, String query) {
         if (query == null || query.trim().isEmpty()) {
             return iClientRepository.findAll();
         }
-        //return iClientRepository.findClientsByCriteria(query);
-        return new ArrayList<>();
+
+        String queryLower = query.toLowerCase().trim();
+
+        return this.iClientRepository.findAllByUser_Id(userId).stream()
+                .filter(client ->
+                        String.valueOf(client.getId()).toLowerCase().contains(queryLower) ||
+                                client.getFirstName().toLowerCase().contains(queryLower) ||
+                                client.getSecondName().toLowerCase().contains(queryLower) ||
+                                client.getFirstSurname().toLowerCase().contains(queryLower) ||
+                                client.getSecondSurname().toLowerCase().contains(queryLower) ||
+                                client.getEmail().toLowerCase().contains(queryLower) ||
+                                client.getPhone().toLowerCase().contains(queryLower) ||
+                                client.getAddress().toLowerCase().contains(queryLower)
+                ).toList();
     }
 }
