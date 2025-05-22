@@ -127,10 +127,10 @@ public class ClientController {
             @ApiResponse(responseCode = "200", description = "Clientes encontrados"),
             @ApiResponse(responseCode = "204", description = "No se encontraron coincidencias")
     })
-    @GetMapping("/search")
-    public ResponseEntity<List<Client>> searchClients(
+    @GetMapping("/search/{userId}")
+    public ResponseEntity<List<Client>> searchClients(@PathVariable int userId,
             @RequestParam(required = false) @Parameter(description = "Texto de búsqueda para filtrar clientes") String query) {
-        List<Client> clients = this.iClientService.searchClientsByQuery(query);
+        List<Client> clients = this.iClientService.searchClientsByQuery(userId, query);
         if (clients.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
