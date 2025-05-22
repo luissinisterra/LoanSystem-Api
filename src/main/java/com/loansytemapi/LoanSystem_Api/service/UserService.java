@@ -1,5 +1,7 @@
 package com.loansytemapi.LoanSystem_Api.service;
 
+import com.loansytemapi.LoanSystem_Api.dto.UserDTO;
+import com.loansytemapi.LoanSystem_Api.dto.UserResponseDTO;
 import com.loansytemapi.LoanSystem_Api.exception.InvalidUsernameException;
 import com.loansytemapi.LoanSystem_Api.exception.NotFoundException;
 import com.loansytemapi.LoanSystem_Api.model.User;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,14 +28,20 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User saveUser(User user) throws InvalidUsernameException {
-        if (user.getUsername() == null || user.getUsername().isEmpty() || user.getUsername().length() > 20) {
+    public UserResponseDTO saveUser(UserDTO newUser) throws InvalidUsernameException {
+        if (newUser.getUsername() == null || newUser.getUsername().isEmpty() || newUser.getUsername().length() > 20) {
             throw new InvalidUsernameException("El nombre de usuario no puede estar vacío o tener más de 20 caracteres");
         }
-        // Encriptar contraseña antes de guardar
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        return userRepository.save(user);
+        User user = new User();
+        user.setNames(newUser.getNames());
+        user.setSurnames(newUser.getSurnames());
+        user.setEmail(newUser.getEmail());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setUsername(newUser.getUsername());
+        user.setGender(newUser.getGender());
+
+        return new UserResponseDTO(userRepository.save(user));
     }
 
     @Override
@@ -44,26 +53,42 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User updateUser(User user) throws NotFoundException {
-        if (!userRepository.existsById(user.getId())) {
+    public UserResponseDTO updateUser(int id, UserDTO userUpdated) throws NotFoundException {
+        if (!userRepository.existsById(id)) {
             throw new NotFoundException("Usuario no encontrado");
         }
 
-        // Si se actualiza la contraseña, encriptarla
+        User user = new User();
+        user.setId(id);
+        user.setNames(userUpdated.getNames());
+        user.setSurnames(userUpdated.getSurnames());
+        user.setEmail(userUpdated.getEmail());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setUsername(userUpdated.getUsername());
+        user.setGender(userUpdated.getGender());
+
+
         if (user.getPassword() != null && !user.getPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
 
-        return userRepository.save(user);
+        return new UserResponseDTO(userRepository.save(user));
     }
 
     @Override
-    public List<User> getUsers() {
-        return userRepository.findAll();
+    public List<UserResponseDTO> getUsers() {
+        List<User> all = userRepository.findAll();
+        List<UserResponseDTO> allDTO = new ArrayList<>();
+
+        for (User user : all) {
+            allDTO.add(new UserResponseDTO(user));
+        }
+
+        return allDTO;
     }
 
     @Override
-    public User loadUser(String username, String password) throws NotFoundException {
+    public UserResponseDTO loadUser(String username, String password) throws NotFoundException {
         Optional<User> userOpt = userRepository.findUserByUsername(username);
 
         if (userOpt.isEmpty()) {
@@ -76,6 +101,6 @@ public class UserService implements IUserService {
             throw new NotFoundException("Contraseña incorrecta");
         }
 
-        return user;
+        return new UserResponseDTO(user);
     }
 }
