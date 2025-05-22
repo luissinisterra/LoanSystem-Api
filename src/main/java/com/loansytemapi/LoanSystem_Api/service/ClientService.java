@@ -106,6 +106,7 @@ public class ClientService implements IClientService {
                 .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
 
         Client client = new Client();
+        client.setId(id);
         client.setFirstName(updatedClient.getFirstName());
         client.setSecondName(updatedClient.getSecondName());
         client.setFirstSurname(updatedClient.getFirstSurname());
