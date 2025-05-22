@@ -11,5 +11,6 @@ public interface IUserService {
     void removeUser(int id)throws NotFoundException;
     User updateUser(User user) throws NotFoundException;
     List<User> getUsers();
+
     User loadUser(String username, String password) throws NotFoundException;
 }
