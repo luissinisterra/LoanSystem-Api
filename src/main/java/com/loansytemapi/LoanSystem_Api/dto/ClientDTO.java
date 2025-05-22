@@ -14,7 +14,8 @@ public class ClientDTO {
     private String address;
     private int userId;
 
-    public ClientDTO(String firstName, String secondName, String firstSurname, String secondSurname, int age, String email, String phone, String address, int userId) {
+    public ClientDTO(int id, String firstName, String secondName, String firstSurname, String secondSurname, int age, String email, String phone, String address, int userId) {
+        this.id = id;
         this.firstName = firstName;
         this.secondName = secondName;
         this.firstSurname = firstSurname;

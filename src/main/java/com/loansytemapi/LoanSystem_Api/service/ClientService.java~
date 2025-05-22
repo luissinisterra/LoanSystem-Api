@@ -178,7 +178,7 @@ public class ClientService implements IClientService {
                                 client.getEmail().toLowerCase().contains(queryLower) ||
                                 client.getPhone().toLowerCase().contains(queryLower) ||
                                 client.getAddress().toLowerCase().contains(queryLower)).toList();
-        
+
         List<ClientResponseDTO> allDTO = new ArrayList<>();
 
         for (Client client : all) {
