@@ -146,7 +146,7 @@ public class UserService implements IUserService {
 
         User user = userOpt.get();
 
-        if (passwordEncoder.encode(password).equals(user.getPassword())) {
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new NotFoundException("Contraseña incorrecta");
         }
 
