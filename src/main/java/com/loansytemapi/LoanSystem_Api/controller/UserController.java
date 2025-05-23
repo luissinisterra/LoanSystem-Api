@@ -69,7 +69,7 @@ public class UserController {
             @Parameter(description = "ID del usuario que se actualizará") int id,
             @RequestBody
             @Parameter(description = "Usuario con datos actualizados") UserDTO user
-    ) throws NotFoundException {
+    ) throws NotFoundException, InvalidUsernameException {
         UserResponseDTO updatedUser = userService.updateUser(id, user);
         return ResponseEntity.ok(updatedUser);
     }

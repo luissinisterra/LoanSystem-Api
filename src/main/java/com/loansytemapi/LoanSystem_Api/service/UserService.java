@@ -4,7 +4,11 @@ import com.loansytemapi.LoanSystem_Api.dto.UserDTO;
 import com.loansytemapi.LoanSystem_Api.dto.UserResponseDTO;
 import com.loansytemapi.LoanSystem_Api.exception.InvalidUsernameException;
 import com.loansytemapi.LoanSystem_Api.exception.NotFoundException;
+import com.loansytemapi.LoanSystem_Api.model.Client;
+import com.loansytemapi.LoanSystem_Api.model.Loan;
 import com.loansytemapi.LoanSystem_Api.model.User;
+import com.loansytemapi.LoanSystem_Api.repository.IClientRepository;
+import com.loansytemapi.LoanSystem_Api.repository.ILoanRepository;
 import com.loansytemapi.LoanSystem_Api.repository.IUserRepository;
 import com.loansytemapi.LoanSystem_Api.service.imp.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,65 +23,106 @@ import java.util.Optional;
 public class UserService implements IUserService {
 
     private final IUserRepository userRepository;
+    private final IClientRepository clientRepository;
+    private final ILoanRepository loanRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(IUserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(IUserRepository userRepository, IClientRepository clientRepository, ILoanRepository loanRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.clientRepository = clientRepository;
+        this.loanRepository = loanRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public UserResponseDTO saveUser(UserDTO newUser) throws InvalidUsernameException {
-        if (newUser.getUsername() == null || newUser.getUsername().isEmpty() || newUser.getUsername().length() > 20) {
+        // Validación básica del username
+        String username = newUser.getUsername();
+        if (username == null || username.isEmpty() || username.length() > 20) {
             throw new InvalidUsernameException("El nombre de usuario no puede estar vacío o tener más de 20 caracteres");
         }
 
+        // Validación contra la base de datos: ¿ya existe ese username?
+        if (userRepository.findUserByUsername(username).isPresent()) {
+            throw new InvalidUsernameException("El nombre de usuario ya está en uso");
+        }
+
+        // Mapeo de DTO a entidad
         User user = new User();
         user.setNames(newUser.getNames());
         user.setSurnames(newUser.getSurnames());
         user.setEmail(newUser.getEmail());
-        user.setUsername(newUser.getUsername());
+        user.setUsername(username);
         user.setGender(newUser.getGender());
 
+        // Encriptación de la contraseña (si viene)
         if (newUser.getPassword() != null && !newUser.getPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(newUser.getPassword()));
         }
 
+        // Guardado y retorno del DTO de respuesta
         return new UserResponseDTO(userRepository.save(user));
     }
+
 
     @Override
     public void removeUser(int id) throws NotFoundException {
         User user = userRepository.findById(id).orElse(null);
 
-        if (user != null) {
-            this.userRepository.delete(user);
+        List<Loan> loans = loanRepository.findAllByUser_Id(user.getId());
+        List<Client> clients = clientRepository.findAllByUser_Id(user.getId());
+
+        for (Loan loan : loans) {
+            loanRepository.delete(loan);
         }
 
-        throw new NotFoundException("Usuario no encontrado");
-    }
+        for (Client client : clients) {
+            clientRepository.delete(client);
+        }
 
-    @Override
-    public UserResponseDTO updateUser(int id, UserDTO userUpdated) throws NotFoundException {
-        if (!userRepository.existsById(id)) {
+        if (user == null) {
             throw new NotFoundException("Usuario no encontrado");
         }
 
-        User user = new User();
-        user.setId(id);
-        user.setNames(userUpdated.getNames());
-        user.setSurnames(userUpdated.getSurnames());
-        user.setEmail(userUpdated.getEmail());
-        user.setUsername(userUpdated.getUsername());
-        user.setGender(userUpdated.getGender());
+        this.userRepository.deleteById(id);
+    }
 
-        if (userUpdated.getPassword() != null && !userUpdated.getPassword().isEmpty()) {
-            user.setPassword(passwordEncoder.encode(userUpdated.getPassword()));
+    @Override
+    public UserResponseDTO updateUser(int id, UserDTO userUpdated) throws NotFoundException, InvalidUsernameException {
+        // Verifica si el usuario existe
+        Optional<User> existingUserOpt = userRepository.findById(id);
+        if (existingUserOpt.isEmpty()) {
+            throw new NotFoundException("Usuario no encontrado");
         }
 
-        return new UserResponseDTO(userRepository.save(user));
+        User existingUser = existingUserOpt.get();
+
+        String newUsername = userUpdated.getUsername();
+        if (newUsername == null || newUsername.isEmpty() || newUsername.length() > 20) {
+            throw new InvalidUsernameException("El nombre de usuario no puede estar vacío o tener más de 20 caracteres");
+        }
+
+        // Verifica si el username está siendo cambiado y si ya existe en otro usuario
+        Optional<User> otherUserWithSameUsername = userRepository.findUserByUsername(newUsername);
+        if (otherUserWithSameUsername.isPresent() && otherUserWithSameUsername.get().getId() != id) {
+            throw new InvalidUsernameException("El nombre de usuario ya está en uso por otro usuario");
+        }
+
+        // Actualiza los datos
+        existingUser.setNames(userUpdated.getNames());
+        existingUser.setSurnames(userUpdated.getSurnames());
+        existingUser.setEmail(userUpdated.getEmail());
+        existingUser.setUsername(newUsername);
+        existingUser.setGender(userUpdated.getGender());
+
+        if (userUpdated.getPassword() != null && !userUpdated.getPassword().isEmpty()) {
+            existingUser.setPassword(passwordEncoder.encode(userUpdated.getPassword()));
+        }
+
+        return new UserResponseDTO(userRepository.save(existingUser));
     }
+
 
     @Override
     public List<UserResponseDTO> getUsers() {
@@ -101,7 +146,7 @@ public class UserService implements IUserService {
 
         User user = userOpt.get();
 
-        if (passwordEncoder.encode(password) == user.getPassword()) {
+        if (passwordEncoder.encode(password).equals(user.getPassword())) {
             throw new NotFoundException("Contraseña incorrecta");
         }
 

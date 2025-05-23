@@ -70,7 +70,6 @@ public class UserController {
             @RequestBody
             @Parameter(description = "Usuario con datos actualizados") UserDTO user
     ) throws NotFoundException {
-        user.setId(id);
         UserResponseDTO updatedUser = userService.updateUser(id, user);
         return ResponseEntity.ok(updatedUser);
     }

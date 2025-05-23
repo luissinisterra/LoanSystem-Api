@@ -11,7 +11,7 @@ import java.util.List;
 public interface IUserService {
     UserResponseDTO saveUser(UserDTO user) throws InvalidUsernameException;
     void removeUser(int id)throws NotFoundException;
-    UserResponseDTO updateUser(int id, UserDTO user) throws NotFoundException;
+    UserResponseDTO updateUser(int id, UserDTO user) throws NotFoundException, InvalidUsernameException;
     List<UserResponseDTO> getUsers();
     UserResponseDTO loadUser(String username, String password) throws NotFoundException;
 }
