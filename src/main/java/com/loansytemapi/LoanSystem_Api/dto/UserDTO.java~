@@ -17,7 +17,7 @@ public class UserDTO {
         this.password = password;
         this.username = username;
         this.gender = gender;
-        this.token = "";
+        this.token = token;
     }
 
     public String getNames() {
