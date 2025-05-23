@@ -1,0 +1,12 @@
+package com.loansytemapi.LoanSystem_Api.repository;
+
+import com.loansytemapi.LoanSystem_Api.model.Client;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface IClientRepository extends JpaRepository<Client, Integer> {
+    List<Client> findAllByUser_Id(int userId);
+}

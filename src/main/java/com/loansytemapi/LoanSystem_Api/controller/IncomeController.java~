@@ -1,0 +1,186 @@
+package com.loansytemapi.LoanSystem_Api.controller;
+
+import com.loansytemapi.LoanSystem_Api.dto.IncomeCreateDTO;
+import com.loansytemapi.LoanSystem_Api.dto.IncomeResponseDTO;
+import com.loansytemapi.LoanSystem_Api.exception.InvalidAmmountException;
+import com.loansytemapi.LoanSystem_Api.exception.InvalidTextLengthException;
+import com.loansytemapi.LoanSystem_Api.exception.NotFoundException;
+import com.loansytemapi.LoanSystem_Api.model.Income;
+import com.loansytemapi.LoanSystem_Api.service.imp.IIncomeService;
+import com.loansytemapi.LoanSystem_Api.service.JwtService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/incomes")
+@Tag(name = "Incomes", description = "API for income management")
+public class IncomeController {
+
+    private final IIncomeService incomeService;
+    private final JwtService jwtService;
+
+    @Autowired
+    public IncomeController(IIncomeService incomeService, JwtService jwtService) {
+        this.incomeService = incomeService;
+        this.jwtService = jwtService;
+    }
+
+    // === GET ALL INCOMES ===
+    @GetMapping
+    @Operation(summary = "Get all incomes", description = "Returns a list of all registered incomes")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Income list retrieved successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized: missing or invalid token")
+    })
+    public ResponseEntity<List<IncomeResponseDTO>> getAll(@RequestHeader("Authorization") String authHeader) {
+        String token = jwtService.extractToken(authHeader);
+        if (token == null || !jwtService.validateJwtToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return ResponseEntity.ok(incomeService.getAllIncomes());
+    }
+
+    // === GET INCOME BY ID ===
+    @GetMapping("/{id}")
+    @Operation(summary = "Get income by ID", description = "Find a specific income by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Income found"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized: missing or invalid token"),
+            @ApiResponse(responseCode = "404", description = "Income not found")
+    })
+    public ResponseEntity<IncomeResponseDTO> getById(
+            @PathVariable @Parameter(description = "ID of the income to retrieve") Integer id,
+            @RequestHeader("Authorization") String authHeader
+    ) throws NotFoundException {
+
+        String token = jwtService.extractToken(authHeader);
+        if (token == null || !jwtService.validateJwtToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return ResponseEntity.ok(incomeService.getIncomeById(id));
+    }
+
+    // === GET INCOMES BY USER ID ===
+    @GetMapping("/user/{userId}")
+    @Operation(
+            summary = "Get incomes by user ID",
+            description = "Returns a list of incomes associated with a specific user ID"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Incomes retrieved successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized: missing or invalid token"),
+            @ApiResponse(responseCode = "404", description = "No incomes found for the specified user ID")
+    })
+    public ResponseEntity<List<IncomeResponseDTO>> getIncomesByUserId(
+            @PathVariable @Parameter(description = "User ID to retrieve incomes for") Integer userId,
+            @RequestHeader("Authorization") String authHeader
+    ) {
+        String token = jwtService.extractToken(authHeader);
+        if (token == null || !jwtService.validateJwtToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return ResponseEntity.ok(incomeService.getByUserId(userId));
+    }
+
+    // === CREATE INCOME ===
+    @PostMapping
+    @Operation(summary = "Create a new income", description = "Saves a new income in the system")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Income created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid data for creation"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized: missing or invalid token")
+    })
+    public ResponseEntity<IncomeResponseDTO> save(
+            @RequestBody IncomeCreateDTO income,
+            @RequestHeader("Authorization") String authHeader
+    ) throws InvalidTextLengthException, InvalidAmmountException, NotFoundException {
+
+        String token = jwtService.extractToken(authHeader);
+        if (token == null || !jwtService.validateJwtToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return ResponseEntity.status(201).body(incomeService.saveIncome(income));
+    }
+
+    // === UPDATE INCOME ===
+    @PutMapping("/{id}")
+    @Operation(summary = "Update an income", description = "Modifies an existing income")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Income updated successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized: missing or invalid token"),
+            @ApiResponse(responseCode = "404", description = "Income not found")
+    })
+    public ResponseEntity<IncomeResponseDTO> update(
+            @PathVariable Integer id,
+            @RequestBody IncomeCreateDTO income,
+            @RequestHeader("Authorization") String authHeader
+    ) throws NotFoundException, InvalidTextLengthException, InvalidAmmountException {
+
+        String token = jwtService.extractToken(authHeader);
+        if (token == null || !jwtService.validateJwtToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return ResponseEntity.ok(incomeService.updateIncome(id, income));
+    }
+
+    // === DELETE INCOME ===
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete an income", description = "Deletes an income by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Income deleted successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized: missing or invalid token"),
+            @ApiResponse(responseCode = "404", description = "Income not found")
+    })
+    public ResponseEntity<Void> remove(
+            @PathVariable Integer id,
+            @RequestHeader("Authorization") String authHeader
+    ) throws NotFoundException {
+
+        String token = jwtService.extractToken(authHeader);
+        if (token == null || !jwtService.validateJwtToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        incomeService.deleteIncome(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // === FILTER INCOMES ===
+    @GetMapping("/filter")
+    @Operation(summary = "Filter incomes", description = "Returns a list of incomes based on filter criteria")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Filtered income list retrieved successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized: missing or invalid token"),
+            @ApiResponse(responseCode = "404", description = "No incomes found with the provided filters")
+    })
+    public ResponseEntity<List<Income>> getByFilters(
+            @RequestParam(required = false) String incomeType,
+            @RequestParam(required = false) Integer minimumIncome,
+            @RequestParam(required = false) Integer maximumIncome,
+            @RequestParam(required = false) Integer incomeAmmount,
+            @RequestParam(required = false) String dateFilter,
+            @RequestHeader("Authorization") String authHeader
+    ) throws NotFoundException {
+        
+        String token = jwtService.extractToken(authHeader);
+        if (token == null || !jwtService.validateJwtToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return ResponseEntity.ok(incomeService.getByFilter(incomeType, minimumIncome, maximumIncome, incomeAmmount, dateFilter));
+    }
+}
