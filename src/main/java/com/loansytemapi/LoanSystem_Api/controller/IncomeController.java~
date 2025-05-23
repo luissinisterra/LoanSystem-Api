@@ -175,7 +175,7 @@ public class IncomeController {
             @RequestParam(required = false) String dateFilter,
             @RequestHeader("Authorization") String authHeader
     ) throws NotFoundException {
-
+        
         String token = jwtService.extractToken(authHeader);
         if (token == null || !jwtService.validateJwtToken(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
