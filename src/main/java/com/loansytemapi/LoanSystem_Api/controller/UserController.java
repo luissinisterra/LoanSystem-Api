@@ -5,6 +5,7 @@ import com.loansytemapi.LoanSystem_Api.dto.UserResponseDTO;
 import com.loansytemapi.LoanSystem_Api.exception.InvalidUsernameException;
 import com.loansytemapi.LoanSystem_Api.exception.NotFoundException;
 import com.loansytemapi.LoanSystem_Api.model.User;
+import com.loansytemapi.LoanSystem_Api.service.JwtService;
 import com.loansytemapi.LoanSystem_Api.service.UserService;
 import com.loansytemapi.LoanSystem_Api.dto.LoginRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,10 +26,12 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final JwtService jwtService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, JwtService jwtService) {
         this.userService = userService;
+        this.jwtService = jwtService;
     }
 
     @PostMapping
@@ -41,6 +45,8 @@ public class UserController {
             @Parameter(description = "Usuario a crear") UserDTO user
     ) throws InvalidUsernameException {
         UserResponseDTO createdUser = userService.saveUser(user);
+        String jwt = jwtService.generateJwtToken(createdUser);
+        createdUser.setToken(jwt);
         return ResponseEntity.ok(createdUser);
     }
 
@@ -48,12 +54,18 @@ public class UserController {
     @Operation(summary = "Eliminar un usuario por ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuario eliminado exitosamente"),
-            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
+            @ApiResponse(responseCode = "401", description = "No autorizado")
     })
     public ResponseEntity<Void> removeUser(
-            @PathVariable
-            @Parameter(description = "ID del usuario a eliminar") int id
-    ) throws NotFoundException {
+            @PathVariable int id,
+            @RequestHeader("Authorization") String authHeader) throws NotFoundException {
+
+        String token = jwtService.extractToken(authHeader);
+        if (!jwtService.validateJwtToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         userService.removeUser(id);
         return ResponseEntity.ok().build();
     }
@@ -62,22 +74,37 @@ public class UserController {
     @Operation(summary = "Actualizar un usuario existente")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuario actualizado exitosamente"),
+            @ApiResponse(responseCode = "401", description = "No autorizado: token inválido o ausente"),
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
     public ResponseEntity<UserResponseDTO> updateUser(
             @PathVariable
             @Parameter(description = "ID del usuario que se actualizará") int id,
             @RequestBody
-            @Parameter(description = "Usuario con datos actualizados") UserDTO user
+            @Parameter(description = "Datos actualizados del usuario") UserDTO userDTO,
+            @RequestHeader("Authorization") String authHeader
     ) throws NotFoundException, InvalidUsernameException {
-        UserResponseDTO updatedUser = userService.updateUser(id, user);
+
+        String token = jwtService.extractToken(authHeader);
+        if (token == null || !jwtService.validateJwtToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        UserResponseDTO updatedUser = userService.updateUser(id, userDTO);
         return ResponseEntity.ok(updatedUser);
     }
 
     @GetMapping
     @Operation(summary = "Obtener todos los usuarios")
     @ApiResponse(responseCode = "200", description = "Lista de usuarios obtenida exitosamente")
-    public ResponseEntity<List<UserResponseDTO>> getUsers() {
+    public ResponseEntity<List<UserResponseDTO>> getUsers(
+            @RequestHeader("Authorization") String authHeader) {
+
+        String token = jwtService.extractToken(authHeader);
+        if (!jwtService.validateJwtToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         List<UserResponseDTO> users = userService.getUsers();
         return ResponseEntity.ok(users);
     }
@@ -90,6 +117,8 @@ public class UserController {
     })
     public ResponseEntity<UserResponseDTO> loginUser(@RequestBody LoginRequest loginRequest) throws NotFoundException {
         UserResponseDTO user = userService.loadUser(loginRequest.getUsername(), loginRequest.getPassword());
+        String jwt = jwtService.generateJwtToken(user);
+        user.setToken(jwt);
         return ResponseEntity.ok(user);
     }
 }

@@ -11,6 +11,7 @@ public class UserResponseDTO {
     private String password;
     private String username;
     private String gender;
+    private String token;
 
     public UserResponseDTO(int id, String names, String surnames, String email, String password, String username, String gender) {
         this.id = id;
@@ -86,5 +87,13 @@ public class UserResponseDTO {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
