@@ -16,4 +16,6 @@ public interface ILoanService {
     LoanResponseDTO createLoan(LoanDTO loan) throws IncompleteDataException, NotFoundException;
     LoanResponseDTO updateLoan(int id, LoanDTO loan) throws IncompleteDataException, NotFoundException;
     List<LoanResponseDTO> searchLoansByQuery(int userId, String query);
+
+    List<LoanResponseDTO> searchByDates(String range, int userId);
 }
