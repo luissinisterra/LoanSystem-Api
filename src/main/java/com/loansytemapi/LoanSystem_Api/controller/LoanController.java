@@ -213,4 +213,20 @@ public class LoanController {
         }
         return new ResponseEntity<>(loans, HttpStatus.OK);
     }
+
+    // === SEARCH LOANS BY DATE ===
+    @GetMapping("/search/{userId}")
+    @Operation(summary = "Buscar préstamos por fechas", description = "Filtra préstamos por fechas")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Préstamos encontrados con la búsqueda"),
+            @ApiResponse(responseCode = "204", description = "No se encontraron préstamos con ese criterio"),
+            @ApiResponse(responseCode = "401", description = "No autorizado: token inválido o ausente")
+    })
+    public ResponseEntity<List<LoanResponseDTO>> searchLoansByDateRanges(@PathVariable int userId, @RequestParam(required = false) String Date) {
+        List<LoanResponseDTO> loans = this.iLoanService.searchByDates(Date, userId);
+        if (loans.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(loans, HttpStatus.OK);
+    }
 }

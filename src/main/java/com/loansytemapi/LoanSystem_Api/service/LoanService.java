@@ -194,4 +194,33 @@ public class LoanService implements ILoanService {
 
         return allDTO;
     }
+
+    @Override
+    public List<LoanResponseDTO> searchByDates(String range, int userId) {
+        List<LoanResponseDTO> allDTO = new ArrayList<>();
+        LocalDate startDate = calculateStartDate(range);
+        LocalDate endDate = LocalDate.now();
+
+        List<Loan> all = iLoanRepository.findAllByDateGreaterThanEqualAndDateLessThanEqualAndUser_Id(startDate, endDate, userId);
+
+        for (Loan loan : all) {
+            allDTO.add(new LoanResponseDTO(loan));
+        }
+
+        return allDTO;
+    }
+
+    private LocalDate calculateStartDate(String range) {
+        LocalDate today = LocalDate.now();
+        return switch (range.toLowerCase()) {
+            case "1 dia" -> today.minusDays(1);
+            case "1 semana" -> today.minusWeeks(1);
+            case "2 semanas" -> today.minusWeeks(2);
+            case "1 mes" -> today.minusMonths(1);
+            case "3 meses" -> today.minusMonths(3);
+            case "6 meses" -> today.minusMonths(6);
+            case "1 año" -> today.minusYears(1);
+            default -> throw new IllegalArgumentException("Rango no soportado: " + range);
+        };
+    }
 }
