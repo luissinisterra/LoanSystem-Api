@@ -19,7 +19,7 @@ public class Loan {
     private double interestRate;
 
     @Column(name = "term", nullable = false)
-    private double term;
+    private int term;
 
     @Column(name = "active", nullable = false)
     private boolean active;
@@ -61,11 +61,11 @@ public class Loan {
         this.interestRate = interestRate;
     }
 
-    public double getTerm() {
+    public int getTerm() {
         return term;
     }
 
-    public void setTerm(double term) {
+    public void setTerm(int term) {
         this.term = term;
     }
 

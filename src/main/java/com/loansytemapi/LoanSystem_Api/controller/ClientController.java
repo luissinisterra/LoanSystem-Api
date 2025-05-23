@@ -1,10 +1,9 @@
 package com.loansytemapi.LoanSystem_Api.controller;
 
 import com.loansytemapi.LoanSystem_Api.dto.ClientDTO;
+import com.loansytemapi.LoanSystem_Api.dto.ClientResponseDTO;
 import com.loansytemapi.LoanSystem_Api.exception.IncompleteDataException;
 import com.loansytemapi.LoanSystem_Api.exception.NotFoundException;
-    import com.loansytemapi.LoanSystem_Api.model.Client;
-import com.loansytemapi.LoanSystem_Api.model.Loan;
 import com.loansytemapi.LoanSystem_Api.service.imp.IClientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -36,8 +35,8 @@ public class ClientController {
             @ApiResponse(responseCode = "204", description = "No hay clientes disponibles")
     })
     @GetMapping
-    public ResponseEntity<List<Client>> getAllClients() {
-        List<Client> clients = this.iClientService.getAllClients();
+    public ResponseEntity<List<ClientResponseDTO>> getAllClients() {
+        List<ClientResponseDTO> clients = this.iClientService.getAllClients();
         if (clients.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -50,8 +49,8 @@ public class ClientController {
             @ApiResponse(responseCode = "204", description = "No hay clientes disponibles")
     })
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Client>> getAllClientsByUserId(@PathVariable int userId) throws NotFoundException {
-        List<Client> userClients = this.iClientService.getAllClientsByUserId(userId);
+    public ResponseEntity<List<ClientResponseDTO>> getAllClientsByUserId(@PathVariable int userId) throws NotFoundException {
+        List<ClientResponseDTO> userClients = this.iClientService.getAllClientsByUserId(userId);
         if (userClients.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -64,9 +63,9 @@ public class ClientController {
             @ApiResponse(responseCode = "404", description = "Cliente no encontrado")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Client> getClientById(@PathVariable @Parameter(description = "ID del cliente a buscar") int id) {
+    public ResponseEntity<ClientResponseDTO> getClientById(@PathVariable @Parameter(description = "ID del cliente a buscar") int id) {
         try {
-            Client client = this.iClientService.getClientById(id);
+            ClientResponseDTO client = this.iClientService.getClientById(id);
             return new ResponseEntity<>(client, HttpStatus.OK);
         } catch (NotFoundException ex) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -79,11 +78,11 @@ public class ClientController {
             @ApiResponse(responseCode = "400", description = "Datos incompletos o inválidos")
     })
     @PostMapping
-    public ResponseEntity<Client> createClient(@RequestBody @Parameter(description = "Datos del cliente a crear") ClientDTO newClient) throws IncompleteDataException, NotFoundException {
+    public ResponseEntity<ClientResponseDTO> createClient(@RequestBody @Parameter(description = "Datos del cliente a crear") ClientDTO newClient) throws IncompleteDataException, NotFoundException {
         if (newClient == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Client client = this.iClientService.createClient(newClient);
+        ClientResponseDTO client = this.iClientService.createClient(newClient);
         return new ResponseEntity<>(client, HttpStatus.CREATED);
     }
 
@@ -94,16 +93,16 @@ public class ClientController {
             @ApiResponse(responseCode = "404", description = "Cliente no encontrado")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Client> updateClient(
+    public ResponseEntity<ClientResponseDTO> updateClient(
             @PathVariable @Parameter(description = "ID del cliente a actualizar") int id,
-            @RequestBody @Parameter(description = "Datos actualizados del cliente") Client newClient)
+            @RequestBody @Parameter(description = "Datos actualizados del cliente") ClientDTO newClient)
             throws IncompleteDataException, NotFoundException {
 
         if (newClient == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        Client updatedClient = this.iClientService.updateClient(id, newClient);
+        ClientResponseDTO updatedClient = this.iClientService.updateClient(id, newClient);
         return new ResponseEntity<>(updatedClient, HttpStatus.OK);
     }
 
@@ -113,13 +112,9 @@ public class ClientController {
             @ApiResponse(responseCode = "404", description = "Cliente no encontrado")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Client> deleteClient(@PathVariable @Parameter(description = "ID del cliente a eliminar") int id) {
-        try {
-            Client client = this.iClientService.deleteClient(id);
-            return new ResponseEntity<>(client, HttpStatus.OK);
-        } catch (NotFoundException ex) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<ClientResponseDTO> deleteClient(@PathVariable @Parameter(description = "ID del cliente a eliminar") int id) throws NotFoundException {
+        ClientResponseDTO client = this.iClientService.deleteClient(id);
+        return new ResponseEntity<>(client, HttpStatus.OK);
     }
 
     @Operation(summary = "Buscar clientes", description = "Filtra los clientes en base a una consulta de búsqueda")
@@ -127,10 +122,10 @@ public class ClientController {
             @ApiResponse(responseCode = "200", description = "Clientes encontrados"),
             @ApiResponse(responseCode = "204", description = "No se encontraron coincidencias")
     })
-    @GetMapping("/search")
-    public ResponseEntity<List<Client>> searchClients(
+    @GetMapping("/search/{userId}")
+    public ResponseEntity<List<ClientResponseDTO>> searchClients(@PathVariable int userId,
             @RequestParam(required = false) @Parameter(description = "Texto de búsqueda para filtrar clientes") String query) {
-        List<Client> clients = this.iClientService.searchClientsByQuery(query);
+        List<ClientResponseDTO> clients = this.iClientService.searchClientsByQuery(userId, query);
         if (clients.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }

@@ -1,6 +1,7 @@
 package com.loansytemapi.LoanSystem_Api.service;
 
 import com.loansytemapi.LoanSystem_Api.dto.LoanDTO;
+import com.loansytemapi.LoanSystem_Api.dto.LoanResponseDTO;
 import com.loansytemapi.LoanSystem_Api.exception.IncompleteDataException;
 import com.loansytemapi.LoanSystem_Api.exception.NotFoundException;
 import com.loansytemapi.LoanSystem_Api.model.Client;
@@ -13,6 +14,8 @@ import com.loansytemapi.LoanSystem_Api.service.imp.ILoanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -30,34 +33,53 @@ public class LoanService implements ILoanService {
     }
 
     @Override
-    public List<Loan> getAllLoans() {
-        return iLoanRepository.findAll();
+    public List<LoanResponseDTO> getAllLoans() {
+        List<Loan> all = iLoanRepository.findAll();
+        List<LoanResponseDTO> allDTO = new ArrayList<>();
+
+        for (Loan loan : all) {
+            allDTO.add(new LoanResponseDTO(loan));
+        }
+
+        return allDTO;
     }
 
     @Override
-    public List<Loan> getAllLoansByClientId(int clientId) {
-        return iLoanRepository.findAllByClient_Id(clientId);
+    public List<LoanResponseDTO> getAllLoansByClientId(int clientId) {
+        List<Loan> all = iLoanRepository.findAllByClient_Id(clientId);
+        List<LoanResponseDTO> allDTO = new ArrayList<>();
+
+        for (Loan loan : all) {
+            allDTO.add(new LoanResponseDTO(loan));
+        }
+
+        return allDTO;
     }
 
     @Override
-    public List<Loan> getAllLoansByUserId(int userId) {
-        return iLoanRepository.findAllByUser_Id(userId);
+    public List<LoanResponseDTO> getAllLoansByUserId(int userId) {
+        List<Loan> all = iLoanRepository.findAllByUser_Id(userId);
+        List<LoanResponseDTO> allDTO = new ArrayList<>();
+
+        for (Loan loan : all) {
+            allDTO.add(new LoanResponseDTO(loan));
+        }
+
+        return allDTO;
     }
 
     @Override
-    public Loan getLoanById(int id) throws NotFoundException {
-        return iLoanRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Préstamo no encontrado con ID: " + id));
+    public LoanResponseDTO getLoanById(int id) throws NotFoundException {
+        return new LoanResponseDTO(iLoanRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Préstamo no encontrado con ID: " + id)));
     }
 
     @Override
-    public Loan createLoan(LoanDTO newLoan) throws IncompleteDataException, NotFoundException {
+    public LoanResponseDTO createLoan(LoanDTO newLoan) throws IncompleteDataException, NotFoundException {
 
-        // Asegúrate de que el cliente existe
         Client client = this.iClientRepository.findById(newLoan.getClientId())
                 .orElseThrow(() -> new NotFoundException("Cliente no encontrado"));
 
-        // Igual con el usuario
         User user = this.iUserRepository.findById(newLoan.getUserId())
                 .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
 
@@ -79,8 +101,8 @@ public class LoanService implements ILoanService {
         if (loan.getTerm() <= 0) {
             throw new IncompleteDataException("El plazo debe ser mayor a cero.");
         }
-        if (loan.getDate() == null) {
-            throw new IncompleteDataException("La fecha es obligatoria.");
+        if (loan.getDate() == null || loan.getDate().isBefore(LocalDate.now())) {
+            throw new IncompleteDataException("La fecha es obligatoria / no puede ser en el pasado.");
         }
         if (loan.getClient() == null) {
             throw new IncompleteDataException("El cliente es obligatorio.");
@@ -89,70 +111,87 @@ public class LoanService implements ILoanService {
             throw new IncompleteDataException("El usuario es obligatorio.");
         }
 
-        return iLoanRepository.save(loan);
+        return new LoanResponseDTO(this.iLoanRepository.save(loan));
     }
 
     @Override
-    public Loan deleteLoan(int id) throws NotFoundException {
-        Loan loan = getLoanById(id);
+    public LoanResponseDTO deleteLoan(int id) throws NotFoundException {
+        LoanResponseDTO loan = getLoanById(id);
         iLoanRepository.deleteById(id);
         return loan;
     }
 
     @Override
-    public Loan updateLoan(int id, LoanDTO updatedLoan) throws IncompleteDataException, NotFoundException {
-        Loan existingLoan = getLoanById(id);
+    public LoanResponseDTO updateLoan(int id, LoanDTO updatedLoan) throws IncompleteDataException, NotFoundException {
 
-        // Asegúrate de que el cliente existe
         Client client = this.iClientRepository.findById(updatedLoan.getClientId())
                 .orElseThrow(() -> new NotFoundException("Cliente no encontrado"));
 
-        // Igual con el usuario
         User user = this.iUserRepository.findById(updatedLoan.getUserId())
                 .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
 
-        existingLoan.setAmount(updatedLoan.getAmount());
-        existingLoan.setInterestRate(updatedLoan.getInterestRate());
-        existingLoan.setTerm(updatedLoan.getTerm());
-        existingLoan.setActive(updatedLoan.isActive());
-        existingLoan.setDate(updatedLoan.getDate());
-        existingLoan.setClient(client);
-        existingLoan.setUser(user);
+        Loan loan = new Loan();
+        loan.setId(id);
+        loan.setAmount(updatedLoan.getAmount());
+        loan.setInterestRate(updatedLoan.getInterestRate());
+        loan.setTerm(updatedLoan.getTerm());
+        loan.setActive(updatedLoan.isActive());
+        loan.setDate(updatedLoan.getDate());
+        loan.setClient(client);
+        loan.setUser(user);
 
-        if (existingLoan.getAmount() <= 0) {
+        if (loan.getAmount() <= 0) {
             throw new IncompleteDataException("El monto debe ser mayor a cero.");
         }
-        if (existingLoan.getInterestRate() < 0) {
+        if (loan.getInterestRate() < 0) {
             throw new IncompleteDataException("La tasa de interés no puede ser negativa.");
         }
-        if (existingLoan.getTerm() <= 0) {
+        if (loan.getTerm() <= 0) {
             throw new IncompleteDataException("El plazo debe ser mayor a cero.");
         }
-        if (existingLoan.getDate() == null) {
-            throw new IncompleteDataException("La fecha es obligatoria.");
+        if (loan.getDate() == null || loan.getDate().isBefore(LocalDate.now())) {
+            throw new IncompleteDataException("La fecha es obligatoria / no puede ser en el pasado.");
         }
-        if (existingLoan.getClient() == null) {
+        if (loan.getClient() == null) {
             throw new IncompleteDataException("El cliente es obligatorio.");
         }
-        if (existingLoan.getUser() == null) {
+        if (loan.getUser() == null) {
             throw new IncompleteDataException("El usuario es obligatorio.");
         }
 
-        return iLoanRepository.save(existingLoan);
+        return new LoanResponseDTO(this.iLoanRepository.save(loan));
     }
 
     @Override
-    public List<Loan> searchLoansByQuery(int userId, String query) {
+    public List<LoanResponseDTO> searchLoansByQuery(int userId, String query) {
         if (query == null || query.trim().isEmpty()) {
-            return iLoanRepository.findAll();
+
+            List<Loan> all = iLoanRepository.findAllByUser_Id(userId);
+            List<LoanResponseDTO> allDTO = new ArrayList<>();
+
+            for (Loan loan : all) {
+                allDTO.add(new LoanResponseDTO(loan));
+            }
+
+            return allDTO;
         }
 
-        return iLoanRepository.findAllByUser_Id(userId).stream().filter(loan ->
-                                String.valueOf(loan.getId()).toLowerCase().contains(query.toLowerCase()) ||
-                                String.valueOf(loan.getAmount()).toLowerCase().contains(query.toLowerCase()) ||
-                                String.valueOf(loan.getInterestRate()).toLowerCase().contains(query.toLowerCase()) ||
-                                String.valueOf(loan.getTerm()).toLowerCase().contains(query.toLowerCase()) ||
-                                String.valueOf(loan.isActive() ? "Activo" : "Pagado").toLowerCase().contains(query.toLowerCase()) ||
-                                String.valueOf(loan.getDate()).toLowerCase().contains(query.toLowerCase())).toList();
+        String queryLower = query.toLowerCase().trim();
+
+        List<Loan> all = iLoanRepository.findAllByUser_Id(userId).stream().filter(loan ->
+                                String.valueOf(loan.getId()).toLowerCase().contains(queryLower.toLowerCase()) ||
+                                String.valueOf(loan.getAmount()).toLowerCase().contains(queryLower.toLowerCase()) ||
+                                String.valueOf(loan.getInterestRate()).toLowerCase().contains(queryLower.toLowerCase()) ||
+                                String.valueOf(loan.getTerm()).toLowerCase().contains(queryLower.toLowerCase()) ||
+                                String.valueOf(loan.isActive() ? "Activo" : "Pagado").toLowerCase().contains(queryLower.toLowerCase()) ||
+                                String.valueOf(loan.getDate()).toLowerCase().contains(queryLower.toLowerCase())).toList();
+
+        List<LoanResponseDTO> allDTO = new ArrayList<>();
+
+        for (Loan loan : all) {
+            allDTO.add(new LoanResponseDTO(loan));
+        }
+
+        return allDTO;
     }
 }
