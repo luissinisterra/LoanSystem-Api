@@ -11,7 +11,6 @@ import com.loansytemapi.LoanSystem_Api.repository.IClientRepository;
 import com.loansytemapi.LoanSystem_Api.repository.ILoanRepository;
 import com.loansytemapi.LoanSystem_Api.repository.IUserRepository;
 import com.loansytemapi.LoanSystem_Api.service.imp.IClientService;
-import org.aspectj.apache.bcel.generic.InstructionConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -69,7 +68,7 @@ public class ClientService implements IClientService {
                 .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
 
         Client newClient = new Client();
-        newClient.setId(client.getUserId());
+        newClient.setId(client.getId());
         newClient.setFirstName(client.getFirstName());
         newClient.setSecondName(client.getSecondName());
         newClient.setFirstSurname(client.getFirstSurname());
