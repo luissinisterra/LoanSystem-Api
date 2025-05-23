@@ -152,4 +152,13 @@ public class LoanController {
         }
         return new ResponseEntity<>(loans, HttpStatus.OK);
     }
+
+    @GetMapping("/date/{userId}")
+    public ResponseEntity<List<LoanResponseDTO>> searchByDate(@PathVariable int userId, @RequestParam(required = false) @Parameter(description = "Texto de búsqueda para filtrar préstamos") String rango) {
+        List<LoanResponseDTO> loans = this.iLoanService.searchByDates(rango, userId);
+        if (loans.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(loans, HttpStatus.OK);
+    }
 }
