@@ -8,7 +8,6 @@ public class UserDTO {
     private String password;
     private String username;
     private String gender;
-    private String token;
 
     public UserDTO(String names, String surnames, String email, String password, String username, String gender) {
         this.names = names;
@@ -17,7 +16,6 @@ public class UserDTO {
         this.password = password;
         this.username = username;
         this.gender = gender;
-        this.token = "";
     }
 
     public String getNames() {
@@ -66,13 +64,5 @@ public class UserDTO {
 
     public void setGender(String gender) {
         this.gender = gender;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 }

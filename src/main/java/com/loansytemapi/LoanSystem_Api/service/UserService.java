@@ -70,6 +70,10 @@ public class UserService implements IUserService {
     public void removeUser(int id) throws NotFoundException {
         User user = userRepository.findById(id).orElse(null);
 
+        if (user == null) {
+            throw new NotFoundException("Usuario no encontrado");
+        }
+
         List<Loan> loans = loanRepository.findAllByUser_Id(user.getId());
         List<Client> clients = clientRepository.findAllByUser_Id(user.getId());
 
@@ -79,10 +83,6 @@ public class UserService implements IUserService {
 
         for (Client client : clients) {
             clientRepository.delete(client);
-        }
-
-        if (user == null) {
-            throw new NotFoundException("Usuario no encontrado");
         }
 
         this.userRepository.deleteById(id);
