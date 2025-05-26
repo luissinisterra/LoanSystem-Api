@@ -31,4 +31,6 @@ public class LoanSystemApiApplication {
 
 		SpringApplication.run(LoanSystemApiApplication.class, args);
 	}
+
+
 }
