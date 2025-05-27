@@ -1,21 +1,30 @@
-# Usar una imagen oficial de OpenJDK runtime como imagen base
-FROM openjdk:17-jdk-slim
+# Etapa de construcción con Semeru JDK 23 y Maven
+FROM icr.io/appcafe/semeru-runtimes:open-23-jdk as build
 
-# Establecer el directorio de trabajo en el contenedor
+# Establecer directorio de trabajo
 WORKDIR /app
 
+# Copiar solo archivos necesarios para cacheo de dependencias
 COPY .mvn/ .mvn
 COPY mvnw pom.xml ./
 
+# Descargar dependencias para optimizar cache
 RUN ./mvnw dependency:go-offline -B
 
-# Copiar el resto del código fuente de la aplicación
+# Copiar el resto del código fuente
 COPY src ./src
 
+# Compilar la app sin ejecutar los tests
 RUN ./mvnw package -DskipTests
 
-# Hacer que el puerto 8080 esté disponible para el mundo exterior a este contenedor
+# Etapa final: imagen liviana con Semeru JDK 23
+FROM icr.io/appcafe/semeru-runtimes:open-23-jdk
+
+WORKDIR /app
 EXPOSE 8080
 
-# Ejecutar el archivo JAR
-ENTRYPOINT ["java", "-jar", "target/demo-0.0.1-SNAPSHOT.jar"]
+# Copiar el JAR generado desde la etapa de build
+COPY --from=build /app/target/*.jar app.jar
+
+# Ejecutar la aplicación
+ENTRYPOINT ["java", "-jar", "app.jar"]
